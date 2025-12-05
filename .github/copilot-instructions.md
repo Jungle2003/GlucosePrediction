@@ -44,6 +44,28 @@
 - `merged_cgm_data.csv`: 整合后的CGM数据集，包含colas和hall的数据
 - `merged_cgm_data_YYYYMMDD.csv`: 带时间戳的备份版本
 
+**合并数据集格式说明 (merged_cgm_data.csv):**
+
+| 列名 | 数据类型 | 说明 | 示例值 |
+|------|---------|------|--------|
+| `id` | int | 受试者唯一标识符，已重新编号确保唯一性 | 1, 2, 3... |
+| `time` | datetime | 血糖测量时间戳，格式：YYYY-MM-DD HH:MM:SS | 2012-01-01 00:00:00 |
+| `gl` | float | 血糖值 (mg/dL) | 86.0, 93.0 |
+| `age` | float | 受试者年龄 (岁) | 77.0, 59.0 |
+| `bmi` | float | 体重指数 (Body Mass Index) | 25.4, 21.7 |
+
+**数据特征:**
+- 按 `id` 和 `time` 升序排序
+- 不同受试者的采样间隔可能不同（5分钟或其他间隔）
+- 每个受试者有多个时间点的连续血糖监测数据
+- 可能存在缺失值，使用前需检查
+- ID已重新编号：colas受试者从1开始，hall受试者紧接其后连续编号
+
+**使用建议:**
+- 读取时指定 `time` 列为datetime类型：`pd.read_csv('merged_cgm_data.csv', parse_dates=['time'])`
+- 按受试者分组处理：`df.groupby('id')`
+- 时序分析时需要先按 `id` 和 `time` 排序
+
 ### src/DataFilter/
 
 ### src/Models/
