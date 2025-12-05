@@ -6,6 +6,7 @@
 
 ## **AI编码注意事项**
 每次编辑处理后，根据编辑内容，修改更新本文件中的相关部分，确保文档与代码保持同步。
+任何时候都不要检索笔记本摘要
 
 ## **架构与目录结构**
 
@@ -22,11 +23,26 @@
 
 **文件说明:**
 - `origin_data_plot.ipynb`: 原始数据可视化notebook，用于读取和分析colas.csv数据
-  - 包含时间序列图、分布直方图、箱线图等多种科研标准可视化
-  - 分析血糖变化率、患者特征（性别、年龄、BMI、T2DM状态）
-  - 数据采样间隔分析和数据质量报告
+    - 数据基本信息统计（shape, columns, missing values, subject count）
+    - 时间序列图（前3个受试者的CGM数据可视化）
+    - 噪声评估分析（SNR计算、噪声水平、异常跳变比例）
+    - 噪声指标可视化（4个子图：SNR分布、噪声水平分布、异常跳变分布、SNR vs 噪声散点图）
+    - 滤波前后效果对比（演示滤波对数据质量的改善，论证滤波对模型训练的重要性）
 
 ### src/DataFormat/
+
+该目录用于数据格式化和整合，将不同来源的原始数据统一格式后合并
+
+**文件说明:**
+- `dataformat.ipynb`: 数据格式化和整合notebook
+    - 读取并整合 colas.csv 和 hall.csv 两个数据集
+    - 统一列名格式（age, bmi统一为小写）
+    - 提取所需列：id, time, gl, age, bmi
+    - 重新编号受试者ID，避免不同数据集间的ID冲突
+    - 数据质量检查（缺失值、重复值、统计摘要）
+    - 导出合并后的数据集到 merged_cgm_data.csv
+- `merged_cgm_data.csv`: 整合后的CGM数据集，包含colas和hall的数据
+- `merged_cgm_data_YYYYMMDD.csv`: 带时间戳的备份版本
 
 ### src/DataFilter/
 
