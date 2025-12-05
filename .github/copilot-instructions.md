@@ -31,6 +31,19 @@
 
 ### src/DataFormat/
 
+该目录用于数据格式化和整合，将不同来源的原始数据统一格式后合并
+
+**文件说明:**
+- `dataformat.ipynb`: 数据格式化和整合notebook
+    - 读取并整合 colas.csv 和 hall.csv 两个数据集
+    - 统一列名格式（age, bmi统一为小写）
+    - 提取所需列：id, time, gl, age, bmi
+    - 重新编号受试者ID，避免不同数据集间的ID冲突
+    - 数据质量检查（缺失值、重复值、统计摘要）
+    - 导出合并后的数据集到 merged_cgm_data.csv
+- `merged_cgm_data.csv`: 整合后的CGM数据集，包含colas和hall的数据
+- `merged_cgm_data_YYYYMMDD.csv`: 带时间戳的备份版本
+
 ### src/DataFilter/
 
 ### src/Models/
