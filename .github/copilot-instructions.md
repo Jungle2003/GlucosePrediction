@@ -12,8 +12,7 @@
 
 ### doc
 **文件说明:**
-- 'dissertation.md':基于此项目的毕业论文，如果你需要编辑它，请阅读已有部分的文字，确保新增内容与我的文字风格
-一样，并且内容连贯，没有AI生成的痕迹
+- `dissertation.md`:基于此项目的毕业论文，如果你需要编辑它，请阅读已有部分的文字，确保新增内容与我的文字风格一样，并且内容连贯，没有AI生成的痕迹(重要)
 
 ### SourceData/
 
@@ -48,7 +47,12 @@
     - 提取所需列：id, time, gl, age, bmi
     - 重新编号受试者ID，避免不同数据集间的ID冲突
     - 数据质量检查（缺失值、重复值、统计摘要）
+    - 过滤记录时间不足1天的受试者数据
     - 导出合并后的数据集到 merged_cgm_data.csv
+- `plot_merged_data.ipynb`: 合并后数据可视化notebook
+    - 读取 merged_cgm_data.csv
+    - 按受试者编号顺序，绘制每个受试者数据量最多的一天的血糖-时间序列图
+    - 包含统计信息（均值、标准差、范围）
 - `merged_cgm_data.csv`: 整合后的CGM数据集，包含colas和hall的数据
 - `merged_cgm_data_YYYYMMDD.csv`: 带时间戳的备份版本
 
