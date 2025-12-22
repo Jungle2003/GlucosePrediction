@@ -80,7 +80,34 @@
 - 按受试者分组处理：`df.groupby('id')`
 - 时序分析时需要先按 `id` 和 `time` 排序
 
-### src/DataFilter/
+### src/DataFillter/
+
+该目录用于存放数据滤波和去噪相关的代码
+
+**文件说明:**
+- `kalman.ipynb`: 卡尔曼滤波处理notebook
+    - 读取 `merged_cgm_data.csv`
+    - 实现基于恒定速度模型(Constant Velocity Model)的卡尔曼滤波器
+    - 对每个受试者的血糖数据进行平滑处理，减少传感器噪声
+    - 可视化对比滤波前后的效果（Raw vs Filtered）
+    - 导出滤波后的数据到 `kalman_filtered_cgm_data.csv`
+- `savitzky_golay.ipynb`: Savitzky-Golay 滤波处理notebook
+    - 读取 `merged_cgm_data.csv`
+    - 使用 `scipy.signal.savgol_filter` 实现滤波 (Window=15, Poly=3)
+    - 优势：能很好地保留血糖波动的峰值特征
+    - 导出滤波后的数据到 `sg_filtered_cgm_data.csv`
+- `butterworth.ipynb`: 巴特沃斯低通滤波处理notebook
+    - 读取 `merged_cgm_data.csv`
+    - 使用 `scipy.signal.filtfilt` 实现双向零相位滤波 (Order=2, Cutoff=0.15)
+    - 优势：有效去除高频噪声且无相位滞后
+    - 导出滤波后的数据到 `butterworth_filtered_cgm_data.csv`
+- `filter_comparison.ipynb`: 滤波效果对比notebook
+    - 读取原始数据及三种滤波器的输出结果
+    - 在同一张图上绘制 Raw, Kalman, S-G, Butterworth 的曲线进行对比
+    - 帮助选择最适合的预处理方法
+- `kalman_filtered_cgm_data.csv`: 经过卡尔曼滤波处理后的数据集，包含 `gl_kalman` 列
+- `sg_filtered_cgm_data.csv`: 经过S-G滤波处理后的数据集，包含 `gl_sg` 列
+- `butterworth_filtered_cgm_data.csv`: 经过巴特沃斯滤波处理后的数据集，包含 `gl_butter` 列
 
 ### src/Models/
 
