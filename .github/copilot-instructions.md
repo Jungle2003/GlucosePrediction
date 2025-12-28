@@ -30,11 +30,28 @@
 
 **文件说明:**
 - `origin_data_plot.ipynb`: 原始数据可视化notebook，用于读取和分析colas.csv数据
-    - 数据基本信息统计（shape, columns, missing values, subject count）
-    - 时间序列图（前3个受试者的CGM数据可视化）
-    - 噪声评估分析（SNR计算、噪声水平、异常跳变比例）
-    - 噪声指标可视化（4个子图：SNR分布、噪声水平分布、异常跳变分布、SNR vs 噪声散点图）
-    - 滤波前后效果对比（演示滤波对数据质量的改善，论证滤波对模型训练的重要性）
+
+### src/DataSplit/
+
+该目录用于存放数据集划分相关的代码和数据
+
+#### src/DataSplit/Served/
+该目录用于存放专门用于迁移学习（Transfer Learning）的保留数据集。
+
+**文件说明:**
+- `split_data.ipynb`: 数据集划分脚本
+    - 读取 `src/DataFillter/sg/sg_filtered_cgm_data.csv`
+    - 在排序后的受试者列表中**等间隔选取** 10 个受试者作为迁移学习集
+    - 将剩余受试者作为训练/测试集
+    - 将血糖列名统一重命名为 `gl`
+    - 导出 `served.csv` 和 `TrainTest.csv`
+- `served.csv`: 包含 10 个受试者的 S-G 滤波后数据，列名：`id`, `time`, `gl`, `age`, `bmi`。
+
+#### src/DataSplit/TrainTest/
+该目录用于存放用于预训练通用模型的大规模数据集。
+
+**文件说明:**
+- `TrainTest.csv`: 包含除 Served Set 外所有受试者的 S-G 滤波后数据，列名：`id`, `time`, `gl`, `age`, `bmi`。
 
 ### src/DataFormat/
 
@@ -80,9 +97,41 @@
 - 按受试者分组处理：`df.groupby('id')`
 - 时序分析时需要先按 `id` 和 `time` 排序
 
-### src/DataFilter/
+### src/DataFillter/
 
-### src/Models/
+该目录用于存放数据滤波和去噪相关的代码，按滤波方法分子目录存放
+
+**文件说明:**
+- `filter_comparison.ipynb`: 滤波效果对比notebook
+    - 读取原始数据及三种滤波器的输出结果
+    - 在同一张图上绘制 Raw, Kalman, S-G, Butterworth 的曲线进行对比
+    - 帮助选择最适合的预处理方法
+
+#### src/DataFillter/kalman/
+- `kalman.ipynb`: 卡尔曼滤波处理notebook
+    - 读取 `merged_cgm_data.csv`
+    - 实现基于恒定速度模型(Constant Velocity Model)的卡尔曼滤波器
+    - 对每个受试者的血糖数据进行平滑处理，减少传感器噪声
+    - 可视化对比滤波前后的效果（Raw vs Filtered）
+    - 导出滤波后的数据到 `kalman_filtered_cgm_data.csv`
+- `kalman_filtered_cgm_data.csv`: 经过卡尔曼滤波处理后的数据集，包含 `gl_kalman` 列
+
+#### src/DataFillter/sg/
+- `savitzky_golay.ipynb`: Savitzky-Golay 滤波处理notebook
+    - 读取 `merged_cgm_data.csv`
+    - 使用 `scipy.signal.savgol_filter` 实现滤波 (Window=15, Poly=3)
+    - 优势：能很好地保留血糖波动的峰值特征
+    - 导出滤波后的数据到 `sg_filtered_cgm_data.csv`
+- `sg_filtered_cgm_data.csv`: 经过S-G滤波处理后的数据集，包含 `gl_sg` 列
+
+#### src/DataFillter/butterworth/
+- `butterworth.ipynb`: 巴特沃斯低通滤波处理notebook
+    - 读取 `merged_cgm_data.csv`
+    - 使用 `scipy.signal.filtfilt` 实现双向零相位滤波 (Order=2, Cutoff=0.15)
+    - 优势：有效去除高频噪声且无相位滞后
+    - 导出滤波后的数据到 `butterworth_filtered_cgm_data.csv`
+- `butterworth_filtered_cgm_data.csv`: 经过巴特沃斯滤波处理后的数据集，包含 `gl_butter` 列
+
 
 ## **输出及编码要求**
 要求代码中的注释用中文
