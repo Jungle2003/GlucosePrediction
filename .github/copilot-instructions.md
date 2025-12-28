@@ -30,11 +30,28 @@
 
 **文件说明:**
 - `origin_data_plot.ipynb`: 原始数据可视化notebook，用于读取和分析colas.csv数据
-    - 数据基本信息统计（shape, columns, missing values, subject count）
-    - 时间序列图（前3个受试者的CGM数据可视化）
-    - 噪声评估分析（SNR计算、噪声水平、异常跳变比例）
-    - 噪声指标可视化（4个子图：SNR分布、噪声水平分布、异常跳变分布、SNR vs 噪声散点图）
-    - 滤波前后效果对比（演示滤波对数据质量的改善，论证滤波对模型训练的重要性）
+
+### src/DataSplit/
+
+该目录用于存放数据集划分相关的代码和数据
+
+#### src/DataSplit/Served/
+该目录用于存放专门用于迁移学习（Transfer Learning）的保留数据集。
+
+**文件说明:**
+- `split_data.ipynb`: 数据集划分脚本
+    - 读取 `src/DataFillter/sg/sg_filtered_cgm_data.csv`
+    - 在排序后的受试者列表中**等间隔选取** 10 个受试者作为迁移学习集
+    - 将剩余受试者作为训练/测试集
+    - 将血糖列名统一重命名为 `gl`
+    - 导出 `served.csv` 和 `TrainTest.csv`
+- `served.csv`: 包含 10 个受试者的 S-G 滤波后数据，列名：`id`, `time`, `gl`, `age`, `bmi`。
+
+#### src/DataSplit/TrainTest/
+该目录用于存放用于预训练通用模型的大规模数据集。
+
+**文件说明:**
+- `TrainTest.csv`: 包含除 Served Set 外所有受试者的 S-G 滤波后数据，列名：`id`, `time`, `gl`, `age`, `bmi`。
 
 ### src/DataFormat/
 
