@@ -82,34 +82,39 @@
 
 ### src/DataFillter/
 
-该目录用于存放数据滤波和去噪相关的代码
+该目录用于存放数据滤波和去噪相关的代码，按滤波方法分子目录存放
 
 **文件说明:**
+- `filter_comparison.ipynb`: 滤波效果对比notebook
+    - 读取原始数据及三种滤波器的输出结果
+    - 在同一张图上绘制 Raw, Kalman, S-G, Butterworth 的曲线进行对比
+    - 帮助选择最适合的预处理方法
+
+#### src/DataFillter/kalman/
 - `kalman.ipynb`: 卡尔曼滤波处理notebook
     - 读取 `merged_cgm_data.csv`
     - 实现基于恒定速度模型(Constant Velocity Model)的卡尔曼滤波器
     - 对每个受试者的血糖数据进行平滑处理，减少传感器噪声
     - 可视化对比滤波前后的效果（Raw vs Filtered）
     - 导出滤波后的数据到 `kalman_filtered_cgm_data.csv`
+- `kalman_filtered_cgm_data.csv`: 经过卡尔曼滤波处理后的数据集，包含 `gl_kalman` 列
+
+#### src/DataFillter/sg/
 - `savitzky_golay.ipynb`: Savitzky-Golay 滤波处理notebook
     - 读取 `merged_cgm_data.csv`
     - 使用 `scipy.signal.savgol_filter` 实现滤波 (Window=15, Poly=3)
     - 优势：能很好地保留血糖波动的峰值特征
     - 导出滤波后的数据到 `sg_filtered_cgm_data.csv`
+- `sg_filtered_cgm_data.csv`: 经过S-G滤波处理后的数据集，包含 `gl_sg` 列
+
+#### src/DataFillter/butterworth/
 - `butterworth.ipynb`: 巴特沃斯低通滤波处理notebook
     - 读取 `merged_cgm_data.csv`
     - 使用 `scipy.signal.filtfilt` 实现双向零相位滤波 (Order=2, Cutoff=0.15)
     - 优势：有效去除高频噪声且无相位滞后
     - 导出滤波后的数据到 `butterworth_filtered_cgm_data.csv`
-- `filter_comparison.ipynb`: 滤波效果对比notebook
-    - 读取原始数据及三种滤波器的输出结果
-    - 在同一张图上绘制 Raw, Kalman, S-G, Butterworth 的曲线进行对比
-    - 帮助选择最适合的预处理方法
-- `kalman_filtered_cgm_data.csv`: 经过卡尔曼滤波处理后的数据集，包含 `gl_kalman` 列
-- `sg_filtered_cgm_data.csv`: 经过S-G滤波处理后的数据集，包含 `gl_sg` 列
 - `butterworth_filtered_cgm_data.csv`: 经过巴特沃斯滤波处理后的数据集，包含 `gl_butter` 列
 
-### src/Models/
 
 ## **输出及编码要求**
 要求代码中的注释用中文
