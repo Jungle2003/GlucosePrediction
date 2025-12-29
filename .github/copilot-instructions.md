@@ -139,6 +139,19 @@
     - 导出滤波后的数据到 `butterworth_filtered_cgm_data.csv`
 - `butterworth_filtered_cgm_data.csv`: 经过巴特沃斯滤波处理后的数据集，包含 `gl_butter` 列
 
+### src/Prediction/
+
+该目录用于存放各种预测模型的实现代码
+
+#### src/Prediction/KNN/
+- `knn_prediction.ipynb`: KNN 血糖预测模型notebook
+    - 读取 `Train.csv` 和 `Test.csv`
+    - 构建滑动窗口数据集，融合 Age 和 BMI 特征
+    - 数据标准化处理
+    - 训练 KNeighborsRegressor 模型
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：预测值对比图和散点图
+
 
 ## **输出及编码要求**
 要求代码中的注释用中文
