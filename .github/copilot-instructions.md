@@ -52,6 +52,13 @@
 
 **文件说明:**
 - `TrainTest.csv`: 包含除 Served Set 外所有受试者的 S-G 滤波后数据，列名：`id`, `time`, `gl`, `age`, `bmi`。
+- `split_train_test.ipynb`: 训练/测试集划分脚本
+    - 读取 `TrainTest.csv`
+    - 对每个受试者，截取**最后 6 小时** (72个点) 作为测试集
+    - 剩余数据作为训练集
+    - 导出 `Train.csv` 和 `Test.csv`
+- `Train.csv`: 训练集数据
+- `Test.csv`: 测试集数据 (每个受试者最后 6 小时)
 
 ### src/DataFormat/
 
