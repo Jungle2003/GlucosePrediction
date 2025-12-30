@@ -144,13 +144,14 @@
 该目录用于存放各种预测模型的实现代码
 
 #### src/Prediction/KNN/
-- `knn_prediction.ipynb`: KNN 血糖预测模型notebook
-    - 读取 `Train.csv` 和 `Test.csv`
-    - 构建滑动窗口数据集，融合 Age 和 BMI 特征
+- `knn_prediction.ipynb`: KNN 血糖预测模型notebook (直接多步预测版)
+    - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
+    - 构建滑动窗口数据集，支持配置预测步长 (Horizon) 进行直接预测
+    - 融合 Age 和 BMI 静态特征
     - 数据标准化处理
     - 训练 KNeighborsRegressor 模型
     - 评估指标：MAE, RMSE, MAPE, RMSPE
-    - 可视化：预测值对比图和散点图
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
 
 
 ## **输出及编码要求**
