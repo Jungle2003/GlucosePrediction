@@ -143,6 +143,13 @@
 
 该目录用于存放各种预测模型的实现代码
 
+#### src/Prediction/ARIMA/
+- `arima_prediction.ipynb`: ARIMA 血糖预测模型notebook
+    - 使用 statsmodels 实现 ARIMA 滚动预测
+    - 包含平稳性检验 (ADF Test) 和参数定阶 (ACF/PACF)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：预测对比图及 Clarke Error Grid 临床评估
+
 #### src/Prediction/KNN/
 - `knn_prediction.ipynb`: KNN 血糖预测模型notebook (直接多步预测版)
     - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
@@ -150,7 +157,20 @@
     - 融合 Age, BMI 静态特征
     - 数据标准化处理
     - 训练 KNeighborsRegressor 模型
+
+#### src/Prediction/RandomForest/
+- `random_forest_prediction.ipynb`: Random Forest 血糖预测模型notebook
+    - 使用 RandomForestRegressor
+    - 融合 Age, BMI, Hour 特征
+    - 包含数据标准化 (为了与KNN流程一致)
     - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+
+#### src/Prediction/XGBoost/
+- `xgboost_prediction.ipynb`: XGBoost 血糖预测模型notebook
+    - 使用 XGBRegressor
+    - 融合 Age, BMI, Hour 特征
+    - 无需数据标准化    - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
 
 
