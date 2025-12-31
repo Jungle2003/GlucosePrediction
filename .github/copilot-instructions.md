@@ -52,6 +52,13 @@
 
 **文件说明:**
 - `TrainTest.csv`: 包含除 Served Set 外所有受试者的 S-G 滤波后数据，列名：`id`, `time`, `gl`, `age`, `bmi`。
+- `split_train_test.ipynb`: 训练/测试集划分脚本
+    - 读取 `TrainTest.csv`
+    - 对每个受试者，截取**最后 6 小时** (72个点) 作为测试集
+    - 剩余数据作为训练集
+    - 导出 `Train.csv` 和 `Test.csv`
+- `Train.csv`: 训练集数据
+- `Test.csv`: 测试集数据 (每个受试者最后 6 小时)
 
 ### src/DataFormat/
 
@@ -131,6 +138,20 @@
     - 优势：有效去除高频噪声且无相位滞后
     - 导出滤波后的数据到 `butterworth_filtered_cgm_data.csv`
 - `butterworth_filtered_cgm_data.csv`: 经过巴特沃斯滤波处理后的数据集，包含 `gl_butter` 列
+
+### src/Prediction/
+
+该目录用于存放各种预测模型的实现代码
+
+#### src/Prediction/KNN/
+- `knn_prediction.ipynb`: KNN 血糖预测模型notebook (直接多步预测版)
+    - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
+    - 构建滑动窗口数据集，支持配置预测步长 (Horizon) 进行直接预测
+    - 融合 Age, BMI 静态特征
+    - 数据标准化处理
+    - 训练 KNeighborsRegressor 模型
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
 
 
 ## **输出及编码要求**
