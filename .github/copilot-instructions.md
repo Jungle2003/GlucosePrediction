@@ -157,6 +157,15 @@
     - 融合 Age, BMI 静态特征
     - 数据标准化处理
     - 训练 KNeighborsRegressor 模型
+
+#### src/Prediction/RandomForest/
+- `random_forest_prediction.ipynb`: Random Forest 血糖预测模型notebook
+    - 使用 RandomForestRegressor
+    - 融合 Age, BMI, Hour 特征
+    - 包含数据标准化 (为了与KNN流程一致)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+
 #### src/Prediction/XGBoost/
 - `xgboost_prediction.ipynb`: XGBoost 血糖预测模型notebook
     - 使用 XGBRegressor
