@@ -147,7 +147,7 @@
 - `knn_prediction.ipynb`: KNN 血糖预测模型notebook (直接多步预测版)
     - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
     - 构建滑动窗口数据集，支持配置预测步长 (Horizon) 进行直接预测
-    - 融合 Age 和 BMI 静态特征
+    - 融合 Age, BMI 静态特征
     - 数据标准化处理
     - 训练 KNeighborsRegressor 模型
     - 评估指标：MAE, RMSE, MAPE, RMSPE
