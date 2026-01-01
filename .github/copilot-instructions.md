@@ -158,6 +158,16 @@
     - 数据标准化处理
     - 训练 KNeighborsRegressor 模型
 
+#### src/Prediction/Linear/
+- `linear_prediction.ipynb`: Linear Regression 血糖预测模型notebook (直接多步预测版)
+    - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
+    - 构建滑动窗口数据集，支持配置预测步长 (Horizon) 进行直接预测
+    - 融合 Age, BMI 静态特征
+    - 数据标准化处理
+    - 训练 LinearRegression 模型
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+
 #### src/Prediction/RandomForest/
 - `random_forest_prediction.ipynb`: Random Forest 血糖预测模型notebook
     - 使用 RandomForestRegressor
