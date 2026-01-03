@@ -150,6 +150,16 @@
     - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：预测对比图及 Clarke Error Grid 临床评估
 
+#### src/Prediction/CNN/
+- `cnn_prediction.ipynb`: CNN 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建一维卷积神经网络 (Conv1d)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：卷积提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`cnn_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
+
 #### src/Prediction/KNN/
 - `knn_prediction.ipynb`: KNN 血糖预测模型notebook (直接多步预测版)
     - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
@@ -158,6 +168,16 @@
     - 数据标准化处理
     - 训练 KNeighborsRegressor 模型
 
+#### src/Prediction/Linear/
+- `linear_prediction.ipynb`: Linear Regression 血糖预测模型notebook (直接多步预测版)
+    - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
+    - 构建滑动窗口数据集，支持配置预测步长 (Horizon) 进行直接预测
+    - 融合 Age, BMI 静态特征
+    - 数据标准化处理
+    - 训练 LinearRegression 模型
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+
 #### src/Prediction/RandomForest/
 - `random_forest_prediction.ipynb`: Random Forest 血糖预测模型notebook
     - 使用 RandomForestRegressor
@@ -165,6 +185,37 @@
     - 包含数据标准化 (为了与KNN流程一致)
     - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+
+#### src/Prediction/RNN/
+- `rnn_prediction.ipynb`: RNN 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建循环神经网络 (RNN)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：RNN提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`rnn_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
+
+#### src/Prediction/LSTM/
+- `lstm_prediction.ipynb`: LSTM 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建长短期记忆网络 (LSTM)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：LSTM提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`lstm_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
+
+#### src/Prediction/Transformer/
+- `transformer_prediction.ipynb`: Transformer 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建 Transformer 模型 (Encoder-only)
+    - 包含位置编码 (Positional Encoding)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：Transformer提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`transformer_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
 
 #### src/Prediction/XGBoost/
 - `xgboost_prediction.ipynb`: XGBoost 血糖预测模型notebook
