@@ -150,6 +150,16 @@
     - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：预测对比图及 Clarke Error Grid 临床评估
 
+#### src/Prediction/CNN/
+- `cnn_prediction.ipynb`: CNN 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建一维卷积神经网络 (Conv1d)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：卷积提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`cnn_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
+
 #### src/Prediction/KNN/
 - `knn_prediction.ipynb`: KNN 血糖预测模型notebook (直接多步预测版)
     - 读取 `Train.csv`, `Test.csv` 和 `served.csv`
@@ -175,6 +185,16 @@
     - 包含数据标准化 (为了与KNN流程一致)
     - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+
+#### src/Prediction/RNN/
+- `rnn_prediction.ipynb`: RNN 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建循环神经网络 (RNN)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：RNN提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`rnn_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
 
 #### src/Prediction/XGBoost/
 - `xgboost_prediction.ipynb`: XGBoost 血糖预测模型notebook
