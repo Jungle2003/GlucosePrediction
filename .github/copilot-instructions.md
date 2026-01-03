@@ -196,6 +196,16 @@
     - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
     - 模拟真实场景：加载保存的模型对 Served Set 进行预测
 
+#### src/Prediction/LSTM/
+- `lstm_prediction.ipynb`: LSTM 血糖预测模型notebook (PyTorch实现)
+    - 使用 PyTorch 构建长短期记忆网络 (LSTM)
+    - 自定义 Dataset 和 DataLoader 处理时序数据
+    - 特征融合：LSTM提取时序特征 + 全连接层融合 Age, BMI 静态特征
+    - 包含完整的训练循环、Loss可视化及模型保存/加载机制 (`lstm_model.pth`)
+    - 评估指标：MAE, RMSE, MAPE, RMSPE
+    - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
+    - 模拟真实场景：加载保存的模型对 Served Set 进行预测
+
 #### src/Prediction/XGBoost/
 - `xgboost_prediction.ipynb`: XGBoost 血糖预测模型notebook
     - 使用 XGBRegressor
