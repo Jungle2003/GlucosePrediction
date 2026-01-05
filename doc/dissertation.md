@@ -139,33 +139,6 @@ CGM 的核心应用价值在于其对血糖动态过程的完整记录，这使�
 
 通过上述严谨的标准化流程，我们成功将来自不同研究、不同设备的原始信号转化为高质量的结构化数据集。这不仅消除了工程层面的噪声干扰，更确保了后续章节中模型对比实验的公平性与科学性。
 
-## 参考文献
-
-[1] American Diabetes Association (ADA). Standards of Care in Diabetes—2025. Diabetes Care 2025; 48 (Supplement_1). [https://doi.org/10.2337/dc25-S007]
-[2] Kwon SY, et al. Advances in Continuous Glucose Monitoring: Clinical Applications and Future Perspectives. Endocrinology and Metabolism 2025. [https://doi.org/10.3803/EnM.2025.2370]
-[3] Alam MA, et al. Machine Learning And Artificial Intelligence in Diabetes Prediction And Management: A Comprehensive Review of Models. 2024. [https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5079613]
-[4] Xie X, et al. Reduction of measurement noise in a continuous glucose monitor. Nature Biomedical Engineering 2018; 3: 892–901. [https://doi.org/10.1038/s41551-018-0273-3]
-[5] Kim SJ, et al. Long-term blood glucose prediction using deep learning-based noise reduction. Computer Methods and Programs in Biomedicine 2025. [https://doi.org/10.1016/j.cmpb.2025.108571]
-[6] Kozinetz RM, et al. Machine Learning and Deep Learning Models to Predict Nocturnal Glucose. Diagnostics 2024; 14(7): 740. [https://doi.org/10.3390/diagnostics14070740]
-[7] Facchinetti A, et al. Kalman smoothing for objective and automatic preprocessing of glucose data. IEEE Transactions on Biomedical Engineering 2018; 65(1): 114-123. [https://doi.org/10.1109/TBME.2017.2702326]
-[8] Liu K, Li L, Ma Y, et al. Machine learning models for blood glucose level prediction in patients with diabetes mellitus: systematic review and network meta-analysis. JMIR Medical Informatics 2023; 11: e47833. [https://doi.org/10.2196/47833]
-[9] Ryu JS, et al. A deep learning approach for blood glucose monitoring and forecasting. Scientific Reports 2025. [https://doi.org/10.1038/s41598-025-97391-8]
-[10] Ghimire S, et al. Deep learning for blood glucose level prediction: How well do models perform across diverse datasets? PLOS ONE 2024; 19(9): e0310801. [https://doi.org/10.1371/journal.pone.0310801]
-[11] Zheng Y, et al. Enhancing personalized blood glucose prediction in type 1 diabetes with meta-transfer learning: A few-shot approach. Biomedical Signal Processing and Control 2026; 101: 107234. [https://doi.org/10.1016/j.cmpb.2025.108571]
-[12] Shen Y, et al. Personalized Blood Glucose Forecasting From Limited CGM Data Using Incrementally Retrained LSTM. IEEE Transactions on Biomedical Engineering 2024. [https://doi.org/10.1109/TBME.2024.3491434]
-[13] Yu X, et al. Deep transfer learning: a novel glucose prediction framework for new subjects. Complex & Intelligent Systems 2022; 8: 3123–3137. [https://doi.org/10.1007/s40747-021-00360-7]
-[14] Deng Y, et al. Deep transfer learning and data augmentation improve glucose levels prediction in type 2 diabetes patients. NPJ Digital Medicine 2021; 4: 91. [https://doi.org/10.1038/s41746-021-00480-x]
-[15] Moon K, et al. Personalized blood glucose prediction in type 1 diabetes using meta-learning with bidirectional LSTM-Transformer hybrid model. Scientific Reports 2025; 15: 13491. [https://doi.org/10.1038/s41598-025-13491-5]
-[16] Zhu T, et al. Personalized Blood Glucose Prediction for Type 1 Diabetes Using Evidential Deep Learning and Meta-Learning. IEEE Transactions on Biomedical Engineering 2023; 70(1): 193-204. [https://doi.org/10.1109/TBME.2022.3187625]
-[17] Wang L, et al. Heterogeneous Covariates-Aware Pseudo Supervised Meta-Learning for Few-shot Diabetes Classification. IEEE Transactions on Medical Imaging 2025. [https://doi.org/10.1109/TMI.2024.3416513]
-[18] Singh R, et al. Personalized glucose prediction using in situ data only. Frontiers in Nutrition 2025; 12: 1539118. [https://doi.org/10.3389/fnut.2025.1539118]
-[19] Manchanda E, et al. Data-Efficiency with Comparable Accuracy: Personalized LSTM models on limited individual data. Diabetology 2025; 6(10): 115. [https://doi.org/10.3390/diabetology6100115]
-[20] Tominaga H, et al. Prediction of Postprandial Blood Glucose Variability Using Transformer-based Models. PMC 2025. [https://pmc.ncbi.nlm.nih.gov/articles/PMC12735845/]
-[21] Colás, A., Vigil, L., Vargas, B., Enríquez de Salamanca, R., & Lázaro, P. (2019). Continuous glucose monitoring allows for a better T2D risk prediction than FPG and HbA1c in a high-risk population. *Diabetes Research and Clinical Practice*, 155, 107799. [https://doi.org/10.1016/j.diabres.2019.107799]
-[22] Hall, H., Perelman, D., Breschi, A., Limcaoco, P., Kellogg, R., McLaughlin, T., & Snyder, M. (2018). Glucotypes reveal new patterns of glucose dysregulation. *PLOS Biology*, 16(7), e2005143. [https://doi.org/10.1371/journal.pbio.2005143]
-[23] Zhu, T., Li, K., Herrero, P., & Georgiou, P. (2021). Deep Learning for Diabetes: A Systematic Review. *IEEE Journal of Biomedical and Health Informatics*, 25(7), 2744-2757. [https://doi.org/10.1109/JBHI.2020.3040225]
-[24] Woldaregay, A. Z., Årsand, E., Walderhaug, S., & Albers, D. (2019). Data-driven modeling and prediction of blood glucose dynamics: Machine learning applications in type 1 diabetes. 25(4), 1610-1641. [https://doi.org/10.1016/j.artmed.2019.07.007]
-[25] Martinsson, J., Schliep, A., Eliasson, B., & Mogren, O. (2020). Blood Glucose Prediction with Variance Estimation Using Recurrent Neural Networks. *Journal of Healthcare Informatics Research*, 4, 1-18. [https://doi.org/10.1007/s41666-019-00059-y]
 
 3. CGM数据噪声评估与滤波处理（Noise Assessment and Filtering）
 
@@ -258,7 +231,7 @@ $$
 
 ### 3.2.1 卡尔曼滤波器
 
-卡尔曼滤波器是一种基于状态空间模型的最优递推估计算法，最初由Rudolf E. Kalman于1960年提出，在航空航天、机器人导航等领域得到广泛应用 [36]。近年来，卡尔曼滤波被成功引入CGM信号的实时去噪处理 [27][28]。
+卡尔曼滤波器是一种基于状态空间模型的最优递推估计算法，最初由Rudolf E. Kalman于1960年提出，在航空航天、机器人导航等领域得到广泛应用 [36]。近年来，卡尔曼滤波被成功引入CGM信号的实时去噪处理 [27][28]。卡尔曼滤波的核心逻辑在于通过对系统状态的预测与观测值的融合，实现对含噪信号的最优估计。既不完全依赖对信号的数学建模，也不完全依赖观测数据，而是将二者进行动态融合，这对含有噪声的血糖数据来讲非常适用。
 
 **（1）状态空间模型**
 
@@ -505,6 +478,31 @@ $$
 
 ## 参考文献
 
+[1] American Diabetes Association (ADA). Standards of Care in Diabetes—2025. Diabetes Care 2025; 48 (Supplement_1). [https://doi.org/10.2337/dc25-S007]
+[2] Kwon SY, et al. Advances in Continuous Glucose Monitoring: Clinical Applications and Future Perspectives. Endocrinology and Metabolism 2025. [https://doi.org/10.3803/EnM.2025.2370]
+[3] Alam MA, et al. Machine Learning And Artificial Intelligence in Diabetes Prediction And Management: A Comprehensive Review of Models. 2024. [https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5079613]
+[4] Xie X, et al. Reduction of measurement noise in a continuous glucose monitor. Nature Biomedical Engineering 2018; 3: 892–901. [https://doi.org/10.1038/s41551-018-0273-3]
+[5] Kim SJ, et al. Long-term blood glucose prediction using deep learning-based noise reduction. Computer Methods and Programs in Biomedicine 2025. [https://doi.org/10.1016/j.cmpb.2025.108571]
+[6] Kozinetz RM, et al. Machine Learning and Deep Learning Models to Predict Nocturnal Glucose. Diagnostics 2024; 14(7): 740. [https://doi.org/10.3390/diagnostics14070740]
+[7] Facchinetti A, et al. Kalman smoothing for objective and automatic preprocessing of glucose data. IEEE Transactions on Biomedical Engineering 2018; 65(1): 114-123. [https://doi.org/10.1109/TBME.2017.2702326]
+[8] Liu K, Li L, Ma Y, et al. Machine learning models for blood glucose level prediction in patients with diabetes mellitus: systematic review and network meta-analysis. JMIR Medical Informatics 2023; 11: e47833. [https://doi.org/10.2196/47833]
+[9] Ryu JS, et al. A deep learning approach for blood glucose monitoring and forecasting. Scientific Reports 2025. [https://doi.org/10.1038/s41598-025-97391-8]
+[10] Ghimire S, et al. Deep learning for blood glucose level prediction: How well do models perform across diverse datasets? PLOS ONE 2024; 19(9): e0310801. [https://doi.org/10.1371/journal.pone.0310801]
+[11] Zheng Y, et al. Enhancing personalized blood glucose prediction in type 1 diabetes with meta-transfer learning: A few-shot approach. Biomedical Signal Processing and Control 2026; 101: 107234. [https://doi.org/10.1016/j.cmpb.2025.108571]
+[12] Shen Y, et al. Personalized Blood Glucose Forecasting From Limited CGM Data Using Incrementally Retrained LSTM. IEEE Transactions on Biomedical Engineering 2024. [https://doi.org/10.1109/TBME.2024.3491434]
+[13] Yu X, et al. Deep transfer learning: a novel glucose prediction framework for new subjects. Complex & Intelligent Systems 2022; 8: 3123–3137. [https://doi.org/10.1007/s40747-021-00360-7]
+[14] Deng Y, et al. Deep transfer learning and data augmentation improve glucose levels prediction in type 2 diabetes patients. NPJ Digital Medicine 2021; 4: 91. [https://doi.org/10.1038/s41746-021-00480-x]
+[15] Moon K, et al. Personalized blood glucose prediction in type 1 diabetes using meta-learning with bidirectional LSTM-Transformer hybrid model. Scientific Reports 2025; 15: 13491. [https://doi.org/10.1038/s41598-025-13491-5]
+[16] Zhu T, et al. Personalized Blood Glucose Prediction for Type 1 Diabetes Using Evidential Deep Learning and Meta-Learning. IEEE Transactions on Biomedical Engineering 2023; 70(1): 193-204. [https://doi.org/10.1109/TBME.2022.3187625]
+[17] Wang L, et al. Heterogeneous Covariates-Aware Pseudo Supervised Meta-Learning for Few-shot Diabetes Classification. IEEE Transactions on Medical Imaging 2025. [https://doi.org/10.1109/TMI.2024.3416513]
+[18] Singh R, et al. Personalized glucose prediction using in situ data only. Frontiers in Nutrition 2025; 12: 1539118. [https://doi.org/10.3389/fnut.2025.1539118]
+[19] Manchanda E, et al. Data-Efficiency with Comparable Accuracy: Personalized LSTM models on limited individual data. Diabetology 2025; 6(10): 115. [https://doi.org/10.3390/diabetology6100115]
+[20] Tominaga H, et al. Prediction of Postprandial Blood Glucose Variability Using Transformer-based Models. PMC 2025. [https://pmc.ncbi.nlm.nih.gov/articles/PMC12735845/]
+[21] Colás, A., Vigil, L., Vargas, B., Enríquez de Salamanca, R., & Lázaro, P. (2019). Continuous glucose monitoring allows for a better T2D risk prediction than FPG and HbA1c in a high-risk population. *Diabetes Research and Clinical Practice*, 155, 107799. [https://doi.org/10.1016/j.diabres.2019.107799]
+[22] Hall, H., Perelman, D., Breschi, A., Limcaoco, P., Kellogg, R., McLaughlin, T., & Snyder, M. (2018). Glucotypes reveal new patterns of glucose dysregulation. *PLOS Biology*, 16(7), e2005143. [https://doi.org/10.1371/journal.pbio.2005143]
+[23] Zhu, T., Li, K., Herrero, P., & Georgiou, P. (2021). Deep Learning for Diabetes: A Systematic Review. *IEEE Journal of Biomedical and Health Informatics*, 25(7), 2744-2757. [https://doi.org/10.1109/JBHI.2020.3040225]
+[24] Woldaregay, A. Z., Årsand, E., Walderhaug, S., & Albers, D. (2019). Data-driven modeling and prediction of blood glucose dynamics: Machine learning applications in type 1 diabetes. 25(4), 1610-1641. [https://doi.org/10.1016/j.artmed.2019.07.007]
+[25] Martinsson, J., Schliep, A., Eliasson, B., & Mogren, O. (2020). Blood Glucose Prediction with Variance Estimation Using Recurrent Neural Networks. *Journal of Healthcare Informatics Research*, 4, 1-18. [https://doi.org/10.1007/s41666-019-00059-y]
 [26] Facchinetti, A., Sparacino, G., & Cobelli, C. (2010). An online self-tunable method to denoise CGM sensor data. *IEEE Transactions on Biomedical Engineering*, 57(3), 634-641. [https://doi.org/10.1109/TBME.2009.2033264]
 [27] Sparacino, G., Facchinetti, A., & Cobelli, C. (2010). "Smart" continuous glucose monitoring sensors: On-line signal processing issues. *Sensors*, 10(7), 6751-6772. [https://doi.org/10.3390/s100706751]
 [28] Facchinetti, A. (2016). Continuous glucose monitoring sensors: Past, present and future algorithmic challenges. *Sensors*, 16(12), 2093. [https://doi.org/10.3390/s16122093]

@@ -233,6 +233,22 @@
     - 无需数据标准化    - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
 
+### src/Transfer/
+该目录用于存放迁移学习/微调相关的代码和模型
+
+**文件说明:**
+- `transfer_learning.ipynb`: LSTM 迁移学习主流程notebook
+    - 加载预训练 LSTM 模型 (`lstm_model.pth`)
+    - 针对特定受试者 (ID=258) 进行个性化微调
+    - 数据划分：前 50% 微调集，后 50% 测试集
+    - 冻结策略：冻结 LSTM 层，只训练全连接层
+    - 超参数：lr=1e-4, epochs=30
+    - Baseline vs Fine-tuned 对比评估
+    - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
+
+#### src/Transfer/models/
+- `subject_258_finetuned.pth`: 针对受试者 258 微调后的个性化模型
+
 
 ## **输出及编码要求**
 要求代码中的注释用中文
