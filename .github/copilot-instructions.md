@@ -233,6 +233,19 @@
     - 无需数据标准化    - 评估指标：MAE, RMSE, MAPE, RMSPE
     - 可视化：时序对比图、误差分析及 Clarke Error Grid 临床评估
 
+### src/feature/
+该目录用于特征工程实验
+
+**文件说明:**
+- `feature_engineering.ipynb`: 特征工程实验notebook
+    - 基于 LSTM 模型探究不同特征对血糖预测的影响
+    - 模块化 `FeatureExtractor` 类，支持灵活添加特征组
+    - 特征组：base(基础)、stat(统计)、time(时间)、diff(差分)、trend(趋势)、quantile(分位数)
+    - 特征相关性分析：相关系数、热力图、时间滞后分析
+    - 特征分布可视化
+    - 消融实验：对比不同特征组合的预测效果
+    - 最佳特征组合详细分析：训练曲线、散点图、误差分布、Clarke Error Grid
+
 ### src/Transfer/
 该目录用于存放迁移学习/微调相关的代码和模型
 
