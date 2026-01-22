@@ -259,8 +259,27 @@
     - Baseline vs Fine-tuned 对比评估
     - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
 
+- `transformer_transfer_learning.ipynb`: Transformer 迁移学习主流程notebook
+    - 加载预训练 Transformer 模型 (`transformer_model.pth`)
+    - 针对特定受试者进行个性化微调
+    - 数据划分：前 50% 微调集，后 50% 测试集
+    - 冻结策略：冻结 Input Embedding + Transformer Encoder 层，只训练全连接层
+    - 超参数：lr=1e-3, epochs=50, N_PAST=12, PREDICTION_HORIZON=6
+    - 模型参数：D_MODEL=64, NHEAD=4, NUM_LAYERS=2
+    - Baseline vs Fine-tuned 对比评估
+    - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
+    - Attention 可视化分析（Transformer 特有优势）
+
+- `transformer_meta_transfer_learning.ipynb`: Transformer Meta-Transfer Learning 实验notebook
+    - 实现 **Reptile** (Meta-Learning) 算法，进行元训练 (Meta-Training)
+    - 对比 **Basic Transfer** (Standard Pre-training) 与 **Meta Transfer** 的初始化差异
+    - 实验：**小样本泛化能力 (Few-shot Generalization)**
+    - 学习曲线对比：不同微调样本量 (10, 30, 50, ...) 下的 MAE/RMSE
+    - 目标受试者：ID=258
+
 #### src/Transfer/models/
-- `subject_258_finetuned.pth`: 针对受试者 258 微调后的个性化模型
+- `subject_258_finetuned.pth`: 针对受试者 258 微调后的 LSTM 个性化模型
+- `transformer_subject_258_finetuned.pth`: 针对受试者 258 微调后的 Transformer 个性化模型（运行后生成）
 
 
 ## **输出及编码要求**
