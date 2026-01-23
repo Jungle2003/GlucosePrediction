@@ -7,7 +7,7 @@ xml_file = 'ohio.xml'
 output_file = 'ohio.csv'
 
 # 用户指定的常量
-FIXED_ID = 302
+FIXED_ID = 306
 FIXED_AGE = 35.0
 FIXED_BMI = 26.3
 
