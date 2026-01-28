@@ -261,10 +261,10 @@
 
 - `transformer_transfer_learning.ipynb`: Transformer 迁移学习主流程notebook
     - 加载预训练 Transformer 模型 (`transformer_model.pth`)
-    - 针对特定受试者进行个性化微调
-    - 数据划分：前 50% 微调集，后 50% 测试集
-    - 冻结策略：冻结 Input Embedding + Transformer Encoder 层，只训练全连接层
-    - 超参数：lr=1e-3, epochs=50, N_PAST=12, PREDICTION_HORIZON=6
+    - 针对特定受试者（如 ID=306）进行个性化微调
+    - 数据划分：前 30% 微调集，后 70% 测试集
+    - 冻结策略：冻结 Input Embedding + Transformer Encoder 层，只训练全连接层 (Head)
+    - 超参数：lr=1e-4, epochs=100, N_PAST=12, PREDICTION_HORIZON=6
     - 模型参数：D_MODEL=64, NHEAD=4, NUM_LAYERS=2
     - Baseline vs Fine-tuned 对比评估
     - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
@@ -274,8 +274,11 @@
     - 实现 **Reptile** (Meta-Learning) 算法，进行元训练 (Meta-Training)
     - 对比 **Basic Transfer** (Standard Pre-training) 与 **Meta Transfer** 的初始化差异
     - 实验：**小样本泛化能力 (Few-shot Generalization)**
+    - 数据划分：前 50% 为 Pool (用于抽取微调样本)，后 50% 为 Test (固定测试集)
+    - 微调样本选取：从 Pool 末尾选取最近的 N 个样本 (缓解分布偏移)
     - 学习曲线对比：不同微调样本量 (10, 30, 50, ...) 下的 MAE/RMSE
-    - 目标受试者：ID=258
+    - 详细案例分析：针对特定样本量 (如 N=30) 的预测波形与误差与Basic方法的对比
+    - MAML超参数：Meta Iterate=1000, Inner Steps=5, Meta LR=1e-4
 
 #### src/Transfer/models/
 - `subject_258_finetuned.pth`: 针对受试者 258 微调后的 LSTM 个性化模型
