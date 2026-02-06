@@ -17,6 +17,25 @@
   - 第1章：绪论（研究背景、CGM技术特点、血糖预测意义、国内外研究现状）
   - 第2章：实验数据集选择与标准化处理（Colas和Hall数据集、数据格式化、缺失值处理）
   - 第3章：CGM数据噪声评估与滤波处理（噪声来源分析、三种滤波方法比较、S-G滤波器选择）
+  - 第4章：预测模型构建与对比实验（实验设置、基线与深度模型详细介绍含公式与超参数、结果对比与临床评估）
+    - 4.1节：实验设置（预测任务定义、评估指标包括MAE/RMSE/MAPE/RMSPE和Clarke Error Grid、数据划分策略）
+    - 4.2节：基线模型（ARIMA、线性回归、KNN K=5、随机森林100棵树、XGBoost 100轮/lr=0.1/depth=5）
+    - 4.3节：深度学习模型（统一配置batch=64/Adam/lr=0.001/MSE/50epochs、CNN两层卷积16→32通道、RNN/LSTM隐藏维度32、Transformer d_model=64/nhead=4/nlayers=2）
+    - 4.4-4.5节：实验结果与小结（预留待填充实验数据）
+  - 第5章：基于Transformer的个性化迁移学习与微调策略研究
+    - 5.1节：引言（个体异质性问题、冷启动问题、迁移学习动机）
+    - 5.2节：迁移学习策略（域适应理论、冻结编码器策略、参数高效微调PEFT）
+    - 5.3节：实验设置（10位受试者ID:2,27,49,71,98,124,146,170,192,306、30%校准/70%测试划分、微调超参数lr=1e-4/epochs=100/batch=16/eval模式）
+    - 5.4节：实验结果（单受试者306详细分析RMSE降低23.6%、多受试者汇总表平均RMSE降低19.9%±2.1%、时序波形分析、Clarke误差网格A区提升至89.6%）
+    - 5.5节：讨论（共性个性解耦、少样本效率、部署启示、与Yu/Deng/Shen/Zhu的定量对比表5-3）
+    - 5.6节：本章小结（10位受试者验证的技术贡献）
+  - 第6章：基于元学习的少样本个性化血糖预测
+    - 6.1节：引言（极端少样本挑战、标准迁移学习的优化目标限制、元学习动机）
+    - 6.2节：元学习理论基础（任务分布视角、MAML与Reptile算法、理论本质区别）
+    - 6.3节：实验设计与方法（Reptile元训练超参数表6-1：META_EPOCHS=1000/INNER_STEPS=5/INNER_LR=1e-3/META_LR=1e-4/TASK_BATCH=8、热启动策略、50%Pool/50%Test划分、Basic vs Meta对比设计）
+    - 6.4节：实验结果与分析（元训练监控图6-1、学习曲线对比图6-2表6-2、N=30案例表6-3/时序对比图6-3-6-4、多受试者泛化表6-4）- 待填充实验数据
+    - 6.5节：讨论（梯度方向一致性解释、与第5章互补关系、相关工作对比表6-5、计算效率表6-6、局限性）
+    - 6.6节：本章小结（方法创新、极端少样本验证、多受试者泛化、理论洞察）
 额外的注意事项：
 1.确保引用格式正确，你需要保证你的引用是真实的，能在互联网上找到
 2.确保图表和表格符合学术标准。
@@ -259,8 +278,30 @@
     - Baseline vs Fine-tuned 对比评估
     - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
 
+- `transformer_transfer_learning.ipynb`: Transformer 迁移学习主流程notebook
+    - 加载预训练 Transformer 模型 (`transformer_model.pth`)
+    - 针对特定受试者（如 ID=306）进行个性化微调
+    - 数据划分：前 30% 微调集，后 70% 测试集
+    - 冻结策略：冻结 Input Embedding + Transformer Encoder 层，只训练全连接层 (Head)
+    - 超参数：lr=1e-4, epochs=100, N_PAST=12, PREDICTION_HORIZON=6
+    - 模型参数：D_MODEL=64, NHEAD=4, NUM_LAYERS=2
+    - Baseline vs Fine-tuned 对比评估
+    - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
+    - Attention 可视化分析（Transformer 特有优势）
+
+- `transformer_meta_transfer_learning.ipynb`: Transformer Meta-Transfer Learning 实验notebook
+    - 实现 **Reptile** (Meta-Learning) 算法，进行元训练 (Meta-Training)
+    - 对比 **Basic Transfer** (Standard Pre-training) 与 **Meta Transfer** 的初始化差异
+    - 实验：**小样本泛化能力 (Few-shot Generalization)**
+    - 数据划分：前 50% 为 Pool (用于抽取微调样本)，后 50% 为 Test (固定测试集)
+    - 微调样本选取：从 Pool 末尾选取最近的 N 个样本 (缓解分布偏移)
+    - 学习曲线对比：不同微调样本量 (10, 30, 50, ...) 下的 MAE/RMSE
+    - 详细案例分析：针对特定样本量 (如 N=30) 的预测波形与误差与Basic方法的对比
+    - MAML超参数：Meta Iterate=1000, Inner Steps=5, Meta LR=1e-4
+
 #### src/Transfer/models/
-- `subject_258_finetuned.pth`: 针对受试者 258 微调后的个性化模型
+- `subject_258_finetuned.pth`: 针对受试者 258 微调后的 LSTM 个性化模型
+- `transformer_subject_258_finetuned.pth`: 针对受试者 258 微调后的 Transformer 个性化模型（运行后生成）
 
 
 ## **输出及编码要求**
