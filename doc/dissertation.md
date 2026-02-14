@@ -393,7 +393,13 @@ f_c = W_n \times f_{Nyq} = 0.15 \times 0.1 = 0.015 \text{ cycles/min}
     RMSE = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_i - \hat{y}_i)^2}
       
    平均绝对百分比误差 (Mean Absolute Percentage Error, MAPE)：消除了量纲影响，便于跨数据集比较。但在低血糖值（分母较小）时可能产生数值不稳定。
+      
+    MAPE = \frac{1}{N} \sum_{i=1}^{N} \left| \frac{y_i - \hat{y}_i}{y_i} \right| \times 100\%
+      
    均方根百分比误差 (Root Mean Square Percentage Error, RMSPE)：结合了 RMSE 和百分比误差的特性。
+      
+    RMSPE = \sqrt{\frac{1}{N} \sum_{i=1}^{N} \left( \frac{y_i - \hat{y}_i}{y_i} \right)^2} \times 100\%
+      
 综合以上几种统计指标，可以全面地评估模型的预测精度和稳定性，消除单一指标可能带来的偏差。
 
 2. 临床准确性指标：Clarke Error Grid Analysis (CEGA)
@@ -417,7 +423,7 @@ f_c = W_n \times f_{Nyq} = 0.15 \times 0.1 = 0.015 \text{ cycles/min}
 
 ## 4.2 基线模型与机器学习方法
 
-为了确立预测性能的基准，本研究首先实现了三类传统模型：统计学模型、线性回归模型以及非线性机器学习集成模型。所有模型均采用统一的输入格式：包含过去 12 个时间步（60 分钟）的血糖值序列，以及受试者的年龄（Age）和身体质量指数（BMI）两个静态特征。输入特征向量可形式化表示为：
+为了确立预测性能的基准，本研究首先实现了三类传统模型：统计学模型、线性回归模型以及非线性机器学习集成模型。所有模型均采用统一的输入格式：包含过去 12 个时间步（60 分钟）的血糖值序列（此外，ARIMA 模型由于其统计特性，在滚动预测时采用长度为 200 的历史滑动窗口，以保证参数估计的稳定性），以及受试者的年龄（Age）和身体质量指数（BMI）两个静态特征。输入特征向量可形式化表示为：
 
   \mathbf{X}_t = [g_{t-11}, g_{t-10}, \ldots, g_{t}, \text{Age}, \text{BMI}] \in \mathbb{R}^{14}  
 
@@ -471,7 +477,9 @@ XGBoost（eXtreme Gradient Boosting）是一种基于梯度提升（Gradient Boo
 
 ## 4.3 深度学习模型构建
 
-针对血糖数据的时序依赖性和非线性特征，本研究构建了四种深度神经网络架构：一维卷积神经网络（CNN）、循环神经网络（RNN）、长短期记忆网络（LSTM）以及 Transformer。为确保对比实验的公平性，所有深度学习模型均采用统一的训练策略：批量大小设为 64，采用 Adam 优化器 [50] 以学习率  \eta = 0.001  进行参数更新，损失函数选用均方误差（Mean Squared Error, MSE），训练过程持续 50 个周期（epochs）。输入数据在训练前进行 Z-score 标准化处理。
+针对血糖数据的时序依赖性和非线性特征，本研究构建了四种深度神经网络架构：一维卷积神经网络（CNN）、循环神经网络（RNN）、长短期2记忆网络（LSTM）以及 Transformer。为确保对比实验的公平性，所有深度学习模型均采用统一的训练策略：批量大小设为 64，采用 Adam 优化器 [50] 以学习率  \eta = 0.001  进行参数更新，损失函数选用均方误差（Mean Squared Error, MSE），训练过程持续 50 个周期（epochs）。输入数据在训练前进行 Z-score 标准化处理。
+
+1. 一维卷积神经网络 (CNN)
 
 卷积神经网络在图像处理领域取得了突破性进展，而一维卷积（1D Convolution）在时间序列特征提取上同样高效 [47]。一维卷积操作可形式化表示为：
 
@@ -481,7 +489,7 @@ XGBoost（eXtreme Gradient Boosting）是一种基于梯度提升（Gradient Boo
 
 本研究设计的 CNN 架构采用两层级联卷积结构。第一卷积层配置 16 个大小为 3 的卷积核，采用零填充（padding=1）以保持序列长度，经 ReLU 激活函数和步长为 2 的最大池化后，序列长度减半。第二卷积层配置 32 个卷积核，结构与第一层相同。经两次池化后，特征图被展平并与静态特征（Age, BMI）拼接，最后通过两层全连接网络（隐藏层维度为 64）输出预测值。CNN 的优势在于其平移不变性和高效的并行计算能力，能够快速捕捉短期的局部波动模式。
 
-1. 基础 RNN
+2. 基础 RNN
 
 循环神经网络（Recurrent Neural Network）通过循环连接实现对序列数据的时间依赖建模 [25]。其核心递推公式为：
 
@@ -491,7 +499,7 @@ XGBoost（eXtreme Gradient Boosting）是一种基于梯度提升（Gradient Boo
 
 本研究采用单层 RNN 结构，隐藏层维度  d_h = 32 。模型取最后一个时间步的隐藏状态  h_T  作为序列的全局表示，与静态特征拼接后通过两层全连接网络（隐藏层维度为 64）输出预测值。然而，基础 RNN 存在梯度消失问题，难以有效捕捉长程依赖关系。
 
-2. 长短期记忆网络 (LSTM)
+3. 长短期记忆网络 (LSTM)
 
 为克服 RNN 的长程依赖问题，Hochreiter 和 Schmidhuber 提出了长短期记忆网络（Long Short-Term Memory, LSTM）[46]。LSTM 通过引入门控机制实现对信息流的精细控制，其核心计算单元包含三个门和一个细胞状态：
 
@@ -512,6 +520,10 @@ XGBoost（eXtreme Gradient Boosting）是一种基于梯度提升（Gradient Boo
 其中  \sigma(\cdot)  表示 Sigmoid 激活函数， \odot  表示逐元素乘法（Hadamard 积）。
 
 本研究采用单层 LSTM 结构，隐藏层维度设为 32。模型架构为：LSTM 层提取时序特征 → 取最后时间步的隐藏状态 → 与静态特征拼接 → 两层全连接网络输出预测。LSTM 能够有效记忆长期的血糖演变趋势，是目前血糖预测领域的主流方法之一 [46][48]。
+
+3. Transformer
+
+4. Transformer 模型
 
 考虑到 RNN 类模型的串行计算限制和长距离信息衰减问题，本研究引入了基于自注意力机制（Self-Attention）的 Transformer 模型 [49]。Transformer 摒弃了循环结构，完全依赖注意力机制建模序列中任意两个位置之间的依赖关系，实现了  O(1)  的长程依赖建模能力。
 
