@@ -289,15 +289,15 @@
     - 可视化：训练曲线、时序对比、误差分布、Clarke Error Grid
     - Attention 可视化分析（Transformer 特有优势）
 
-- `transformer_meta_transfer_learning.ipynb`: Transformer Meta-Transfer Learning 实验notebook
-    - 实现 **Reptile** (Meta-Learning) 算法，进行元训练 (Meta-Training)
-    - 对比 **Basic Transfer** (Standard Pre-training) 与 **Meta Transfer** 的初始化差异
-    - 实验：**小样本泛化能力 (Few-shot Generalization)**
+- `transformer_meta_transfer_learning.ipynb`: Transformer 元迁移学习实验notebook
+    - 实现 **Reptile** 元学习算法，通过元训练 (Meta-Training) 获得优质初始化参数
+    - 对比 **Basic Transfer** (标准预训练初始化) 与 **Meta Transfer** (元学习初始化) 在微调阶段的泛化能力
+    - 实验关注：**小样本泛化能力 (Few-shot Generalization)**
     - 数据划分：前 50% 为 Pool (用于抽取微调样本)，后 50% 为 Test (固定测试集)
     - 微调样本选取：从 Pool 末尾选取最近的 N 个样本 (缓解分布偏移)
     - 学习曲线对比：不同微调样本量 (10, 30, 50, ...) 下的 MAE/RMSE
-    - 详细案例分析：针对特定样本量 (如 N=30) 的预测波形与误差与Basic方法的对比
-    - MAML超参数：Meta Iterate=1000, Inner Steps=5, Meta LR=1e-4
+    - 详细案例分析：针对特定样本量 (如 N=30) 的预测波形与误差对比分析
+    - 元训练超参数：META_EPOCHS=1000, INNER_STEPS=5, INNER_LR=1e-3, META_LR=1e-4, TASK_BATCH=8
 
 #### src/Transfer/models/
 - `subject_258_finetuned.pth`: 针对受试者 258 微调后的 LSTM 个性化模型
