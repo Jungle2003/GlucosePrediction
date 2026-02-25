@@ -19,7 +19,7 @@
 6. **预测模型构建**：实现 ARIMA、Linear、KNN、RandomForest、XGBoost、CNN、RNN、LSTM、Transformer 共 9 种模型进行对比实验（`src/Prediction/`）
 7. **特征工程**：提取统计、时间、差分、趋势等多组特征，通过消融实验评估各特征组合的影响（`src/feature/`）
 8. **迁移学习**：基于 Transformer 预训练模型，采用冻结编码器 + 微调 Head 的策略进行个性化迁移（`src/Transfer/`）
-9. **元迁移学习**：实现 Reptile 元学习算法获得优质初始化参数，后续进行迁移学习微调，在极端少样本场景下与标准迁移学习进行对比（`src/Transfer/`）
+9. **元迁移学习**：实现 FOMAML 元学习算法获得优质初始化参数，后续进行迁移学习微调，在极端少样本场景下与标准迁移学习进行对比（`src/Transfer/`）
 
 ## 目录结构
 
@@ -173,11 +173,11 @@ TrainTest.csv → split_train_test.ipynb → Train.csv + Test.csv
 - 可视化：训练曲线、时序波形对比、误差分布、Clarke Error Grid、Attention 热力图
 - 覆盖 10 位受试者的多受试者验证
 
-### 元迁移学习（Reptile 算法）
+### 元迁移学习（FOMAML 算法）
 
 `src/Transfer/transformer_meta_transfer_learning.ipynb`
 
-- 实现 **Reptile** 元学习算法，生成更优的初始化参数
+- 实现 **FOMAML（First-Order MAML）** 元学习算法，生成更优的初始化参数
 - 对比 **Basic Transfer**（标准预训练初始化）与 **Meta Transfer**（元学习初始化）在微调阶段的性能差异
 - **元训练超参数**：META_EPOCHS=1000, INNER_STEPS=5, INNER_LR=1e-3, META_LR=1e-4, TASK_BATCH=8
 - **数据划分**：前 50% Pool（抽取微调样本），后 50% Test（固定测试集）
