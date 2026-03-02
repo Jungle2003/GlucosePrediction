@@ -750,23 +750,23 @@ Finn 等人 [53] 在实验中发现，这种一阶近似在多数场景下与完
 
 我们在源域数据集（Train.csv，包含 [此处添加源域受试者数量] 位受试者）上进行 FOMAML 元训练。每个受试者被视为一个独立的任务。表 6-1 列出了元训练阶段的超参数配置。
 
-表 6-1 FOMAML 元训练超参数配置
+Table 6-1 FOMAML Meta-Training Hyperparameter Configuration
 
-| 类别 | 超参数 | 取值 |
+| Category | Hyperparameter | Value |
 | :--- | :--- | :---: |
-| 外循环 | 元训练迭代次数 $T_{meta}$ | 1000 |
-| 外循环 | 元学习率 $\epsilon$ | $1 \times 10^{-4}$ |
-| 外循环 | 元优化器 | Adam ($\lambda = 1 \times 10^{-5}$) |
-| 外循环 | 任务批大小 $K$ | 8 |
-| 内循环 | 内循环步数 $m$ | 5 |
-| 内循环 | 内循环学习率 $\alpha$ | $1 \times 10^{-3}$ |
-| 内循环 | 内循环优化器 | Adam |
-| 采样 | 支持集大小 $\|D_i^{sup}\|$ | 64 |
-| 采样 | 查询集大小 $\|D_i^{qry}\|$ | 64 |
-| 正则化 | 早停耐心值 | 50 |
-| 正则化 | 学习率调度器 | ReduceLROnPlateau (factor=0.5, patience=20) |
+| Outer Loop | Meta-training iterations $T_{meta}$ | 1000 |
+| Outer Loop | Meta learning rate $\epsilon$ | $1 \times 10^{-4}$ |
+| Outer Loop | Meta optimizer | Adam ($\lambda = 1 \times 10^{-5}$) |
+| Outer Loop | Task batch size $K$ | 8 |
+| Inner Loop | Inner loop steps $m$ | 5 |
+| Inner Loop | Inner loop learning rate $\alpha$ | $1 \times 10^{-3}$ |
+| Inner Loop | Inner loop optimizer | Adam |
+| Sampling | Support set size $\|D_i^{sup}\|$ | 64 |
+| Sampling | Query set size $\|D_i^{qry}\|$ | 64 |
+| Regularization | Early stopping patience | 50 |
+| Regularization | Learning rate scheduler | ReduceLROnPlateau (factor=0.5, patience=20) |
 
-在每次元迭代中，我们从源域受试者中随机采样 $K=8$ 个任务，对每个任务在其支持集上进行 $m=5$ 步内循环适应，随后在查询集上计算损失并利用适应后参数处的一阶梯度更新元参数。元优化器采用 Adam，并引入权重衰减（$\lambda = 1 \times 10^{-5}$）和学习率调度器（ReduceLROnPlateau，衰减因子 0.5，耐心值 20）以提高收敛稳定性。
+在每次元迭代中，我们从源域受试者中随机采样 $K=8$ 个任务，对每个任务在其支持集上进行 $m=5$ 步内循环适应，随后在查询集上计算损失并利用适应后参数处的一阶梯度更新元参数。元优化器采用 Adam，并引入权重衰减（$\lambda = 1 \times 10^{-5}$）和学习率调度器（衰减因子 0.5，耐心值 20）以提高收敛稳定性。
 
 值得注意的是，我们采用热启动（Warm Start）策略：元训练的初始参数并非随机初始化，而是加载第四章中标准预训练得到的 Transformer 模型权重。这种策略结合了标准预训练的知识积累与元学习的快速适应能力，在实践中表现更为稳定。
 
@@ -795,116 +795,48 @@ Finn 等人 [53] 在实验中发现，这种一阶近似在多数场景下与完
 
 ## 6.4 实验结果与分析
 
-图 6-1 展示了 FOMAML 元训练过程中的 Query Loss 变化曲线及任务失败率。
-
-[此处添加元训练 Loss 曲线图]
-
-从图中可以观察到：（1）Query Loss 在前 200 次迭代中快速下降，随后进入平稳收敛阶段，最终稳定在 [此处添加最终 Loss 值] 附近；（2）任务失败率（因数值不稳定导致的 NaN 梯度）在整个训练过程中保持在较低水平（<5%），表明训练过程稳定；（3）学习率调度器在约第 [此处添加触发轮次] 次迭代时触发了一次衰减，帮助模型更精细地收敛。
-
-图 6-2 展示了 Basic Transfer 与 Meta Transfer 在不同微调样本量下的 MAE 对比，这是本章的核心实验结果。
-
-[此处添加学习曲线对比图：MAE vs 微调样本量]
-
-表 6-2 不同微调样本量下的性能对比
-
-| 微调样本量 N | Basic Transfer MAE | Meta Transfer MAE | 提升幅度 |
-| :---: | :---: | :---: | :---: |
-| 10 | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| 20 | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| 30 | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| 50 | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| 100 | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| All | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-
-从学习曲线中可以得出以下关键发现：
-
-1. 少样本优势显著：在微调样本量  N \leq 50  的区间内，Meta Transfer 相比 Basic Transfer 展现出明显的性能优势，MAE 平均降低 [此处添加平均提升百分比]%。这验证了元学习初始化在极端少样本场景下的有效性。
-
-2. 优势随样本量增加而收敛：随着微调样本量的增加，两种方法的性能差距逐渐缩小。当  N > 100  时，两者的 MAE 趋于接近。这一现象符合预期——当数据充足时，初始化的影响被充分的微调所"覆盖"；元学习的核心价值正是体现在数据稀缺的场景中。
-
-3. 临界样本量分析：从曲线斜率变化可以识别出一个"临界样本量"约为  N_{crit} \approx  [此处添加临界值]。在该点之前，增加微调样本能显著提升性能；在该点之后，边际收益递减明显。这一发现对实际部署具有重要指导意义——它回答了"需要收集多少数据才能达到满意的个性化效果"这一关键工程问题。
-
+图 6-2 展示了对于受试者124， Basic Transfer 与 Meta Transfer 在不同微调样本量下的 MAE 对比，这是本章的核心实验结果。
+从学习曲线中我们可以发现，在微调样本量  N≤100  的区间内，Meta Transfer 相比 Basic Transfer 展现出明显的性能优势，MAE 平均降低 25.67%。特别在样本量N≤40的极少样本情况下，MAE 平均降低达到31.58%。这验证了元学习初始化在极端少样本场景下的有效性。
+随着微调样本量的增加，两种方法的性能差距逐渐缩小。当  N > 150  时，两者的 MAE 趋于接近。这一现象符合预期——当数据充足时，初始化的影响被充分的微调所"覆盖"；元学习的核心价值正是体现在数据稀缺的场景中。
 为了更直观地展示元学习的优势，我们选取  N=30 （约 2.5 小时数据）这一典型的少样本场景进行详细分析。
 
-表 6-3 少样本场景 (N=30) 下的完整指标对比
-
-| 指标 | Basic Transfer | Meta Transfer | 提升幅度 |
-| :--- | :---: | :---: | :---: |
-| MAE (mg/dL) | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| RMSE (mg/dL) | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| MAPE (%) | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| RMSPE (%) | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-
-图 6-3 展示了测试集上的时序预测波形对比。
-
-[此处添加时序预测波形对比图]
-
-从波形细节可以观察到：
-1. 峰值跟踪：在血糖快速上升阶段（如餐后），Meta Transfer 模型能够更准确地追踪峰值位置和高度，而 Basic Transfer 存在明显的峰值低估现象。
-2. 响应速度：Meta Transfer 模型在血糖变化点的响应更为迅速，相位滞后明显减小。
-3. 基线稳定性：在血糖平稳阶段，两种方法的表现相近，但 Meta Transfer 的预测方差略小。
-
-图 6-4 展示了预测误差的时序分布。
-
-[此处添加误差时序对比图]
-
-误差分析表明，Meta Transfer 不仅降低了平均误差，还减小了误差的波动幅度，表现为更稳定的预测质量。
-
-为验证元学习策略的泛化能力，我们在 [此处添加受试者数量] 位目标受试者上重复了上述实验。表 6-4 汇总了各受试者在  N=30  条件下的性能对比。
-
-表 6-4 多受试者泛化验证结果 (N=30)
-
-| 受试者 ID | Basic MAE | Meta MAE | 提升幅度 |
-| :---: | :---: | :---: | :---: |
-| [此处添加受试者ID] | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| [此处添加受试者ID] | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| [此处添加受试者ID] | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-| ... | ... | ... | ... |
-| 均值 ± 标准差 | [此处添加数据] | [此处添加数据] | [此处添加数据] |
-
-实验结果表明，Meta Transfer 在所有测试受试者上均取得了正向提升，平均 MAE 提升幅度为 [此处添加平均值]%，标准差为 [此处添加标准差]%。这一结果验证了元学习策略具有良好的跨个体泛化能力。
+Figure 6.3The .
+为了更直观地展示元学习的优势，我们选取  N=30 （约 2.5 小时数据）这一典型的少样本场景进行详细分析。
+图 6-3 展示了受试者124测试集上的时序预测波形对比。
+从波形细节可以观察到，在血糖快速上升阶段（如餐后），Meta Transfer 模型能够更准确地追踪峰值位置和高度，而 Basic Transfer 存在明显的峰值过冲现象。同时Meta Transfer 模型在血糖变化点的响应更为迅速，相位滞后明显减小。
+在血糖平稳阶段，两种方法的表现相近，但 Meta Transfer 的预测方差略小。这表明，Meta Transfer 不仅降低了平均误差，还减小了误差的波动幅度，表现为更稳定的预测质量。
+Table 6.2F
+Metric	Basic Transfer	Meta transfer	Improvement(%)
+MAE	5.9383	5.3762	9.4653
+RMSE	6.4932	6.2146	4.2901
+MAPE	6.2666	5.5451	11.5136
+RMSPE	6.9014	6.2370	9.6266
+从表6-2中，我们可以看出，Meta Transfer除了帮助在小样本数据拟合得更快，对于预测精度也有所提升，使用Meta Transfer策略，在特定个体的稀疏数据上，提取个性化的特征，除了能预测得更快，也能够预测得更好。
 
 ## 6.5 讨论
 
 本章的实验结果证实了元学习在极端少样本场景下的优势。从理论层面，这一优势可以通过梯度方向一致性来解释。
 
-在元训练过程中，FOMAML 算法倾向于找到一个参数点，使得不同任务的梯度方向具有较高的一致性。数学上，该点附近的 Hessian 矩阵在不同任务间具有相似的特征向量方向。这意味着：从该点出发，沿着任意新任务的梯度方向更新参数，不太可能与其他任务的最优方向产生严重冲突。因此，即使只有少量梯度步（对应少量微调数据），也能有效接近新任务的最优解。
+在元训练过程中，FOMAML 算法倾向于找到一个参数点，使得不同任务的梯度方向具有较高的一致性。数学上，该点附近的 Hessian 矩阵在不同任务间具有相似的特征向量方向。这意味着：从该点出发，沿着任意新任务的梯度方向更新参数，不太可能与其他任务的最优方向产生严重冲突。因此，即使只有少量梯度步（对应少量微调数据），也能有效接近新任务的最优解。在这期间，Transformer 的自注意力机制在此过程中发挥了重要作用——与 RNN/LSTM 将时序历史压缩为固定维度隐状态不同，自注意力为每个时间步保留了独立的表征向量，这为 FOMAML 的梯度优化提供了更丰富的参数空间。在元训练阶段，注意力权重学会在不同受试者间识别出共性的时序依赖模式（如餐后上升趋势、夜间平稳段），使得编码器输出的特征天然具备跨个体的可迁移性，从而降低了元梯度在不同任务间的冲突程度。
 
-相比之下，标准预训练得到的参数点可能位于一个"任务间梯度冲突"较严重的区域。在该区域，向某一任务的最优方向移动可能会损害其他任务的性能。这正是导致标准迁移学习在少样本场景下需要更多数据的原因——需要足够的梯度信号来"走出"这片冲突区域。
 
-本章提出的元迁移学习策略与第五章的冻结编码器策略并非替代关系，而是互补关系。两者可以理解为在同一框架内对不同环节的优化：
-
-- 第五章解决的问题是：微调什么——通过冻结编码器，将更新范围限制在回归头，降低过拟合风险。
-- 第六章解决的问题是：从哪里开始微调——通过元学习，获得一个对新任务更敏感的初始化点。
+本章提出的元迁移学习策略与第五章的冻结编码器策略并非替代关系，而是互补关系。两者可以理解为在同一框架内对不同环节的优化：第五章解决的是"微调什么"——通过冻结 Transformer 编码器，将更新范围限制在回归头，降低过拟合风险；本章解决的是"从哪里开始微调"——通过 FOMAML 元训练，获得一个对新任务更敏感的初始化点。这种分工之所以在 Transformer 架构上尤为有效，是因为自注意力编码器与全连接回归头之间存在天然的功能边界：编码器负责提取通用的时序特征表示，回归头负责将这些特征映射为个体化的血糖预测值。FOMAML 进一步强化了这一边界——元训练使编码器收敛到一个能同时服务于多种血糖模式的特征空间，而回归头只需少量样本即可在该空间中锚定个体的映射关系。
 
 在本章的实验中，我们将两者结合使用：采用元学习初始化 + 冻结编码器微调。这种组合策略既继承了元学习在少样本场景下的快速适应能力，又保留了冻结策略的抗过拟合优势。
 
 表 6-5 将本研究的元迁移学习策略与近年来的代表性工作进行对比。
 
-表 6-5 与相关元学习工作的对比
+Table 6-5 Comparison with Related Meta-Learning Approaches for Personalized Glucose Prediction
 
-| 研究 | 方法 | 元学习算法 | 少样本定义 | 核心发现 |
-| :--- | :--- | :--- | :--- | :--- |
-| Zhu 等人 [16] (2023) | FCNN（注意力 RNN + 证据层） | MAML | 有限训练数据 | 30 min RMSE 18.64 ± 2.60 mg/dL，支持预测置信度估计 |
-| Langarica 等人 [55] (2023) | LSTM + 元学习 | MAML | 1 天数据 | 个性化建模有效 |
-| 本研究 | Transformer + FOMAML | FOMAML | 30-50 样本 | [此处添加核心发现] |
+| Study | Backbone Model | Meta-Learning Algorithm | Dataset | Adaptation Data | Key Contribution |
+| :--- | :--- | :---: | :--- | :---: | :--- |
+| Zhu et al. [16] (2023) | FCNN (Attention RNN + Evidential Layer) | MAML | OhioT1DM (T1D) | Limited training data | Uncertainty-aware prediction via evidential deep learning |
+| Langarica et al. [55] (2023) | LSTM | MAML | Custom T1D | 1-day CGM data | Demonstrated effectiveness of personalized meta-learning |
+| Ours | Transformer (Encoder-only) | FOMAML | Colas + Hall (T2D) +OhioT1DM (T1D) | 30–50 samples (~2.5–4 h) | Few-shot adaptation with frozen encoder; attention-based transferable representations |
 
-本研究与 Zhu 等人 [16] 均采用 MAML 系列算法进行元学习，这从不同角度验证了 MAML 框架在血糖预测个性化场景中的有效性。本研究采用的 FOMAML 一阶近似避免了完整 MAML 中二阶导数的计算开销，更适合在资源受限的设备上部署。Zhu 等人的 FCNN 通过证据深度学习层提供了预测的不确定性估计，这是一个值得借鉴的方向。本研究则聚焦于以 Transformer 为骨干网络，在极端少样本条件下（30-50 个样本）实现快速适应。
+本研究与 Zhu 等人 [16] 均采用 MAML 系列算法进行元学习，这从不同角度验证了 MAML 框架在血糖预测个性化场景中的有效性。本研究采用的 FOMAML 一阶近似避免了完整 MAML 中二阶导数的计算开销，更适合在资源受限的设备上部署。Zhu 等人的 FCNN 通过证据深度学习层提供了预测的不确定性估计，这是一个值得借鉴的方向。在骨干网络的选择上，Zhu 等人采用 FCNN、Langarica 等人采用 LSTM，而本研究选择 Transformer 作为骨干网络，这一选择并非单纯追求模型容量的提升。Transformer 的自注意力机制使其能够在不同时间尺度上灵活捕捉血糖动态的依赖关系，这种灵活性在元学习框架下具有额外优势：元训练阶段，注意力模式能够跨受试者学习到具有普适性的时序关注策略；微调阶段，回归头仅需少量样本即可在保持编码器注意力模式不变的前提下完成个体适配。这种"注意力共享、映射个性化"的范式，使得本研究在极端少样本条件下（30-50 个样本）仍能实现有效的快速适应。
 
 与 Langarica 等人 [55] 的工作相比，本研究进一步将少样本的边界推向了极端——验证了在仅有 30 个样本（约 2.5 小时）的条件下元学习仍能带来显著收益。这一发现对于追求"即时个性化"的产品体验具有重要价值。
-
-元学习的一个潜在顾虑是元训练阶段的计算开销。表 6-6 对比了标准预训练与 FOMAML 元训练的计算资源消耗。
-
-表 6-6 计算效率对比
-
-| 阶段 | 标准预训练 | FOMAML 元训练 |
-| :--- | :---: | :---: |
-| 训练时间 | [此处添加数据] | [此处添加数据] |
-| GPU 内存占用 | [此处添加数据] | [此处添加数据] |
-| 模型大小 | 相同 | 相同 |
-| 微调时间（部署端） | 相同 | 相同 |
-
-需要强调的是，元训练是一次性的离线成本，发生在云端或服务器上。一旦完成元训练，用户端的微调流程与标准迁移学习完全一致——加载预训练权重、在本地数据上微调。因此，元学习策略不会增加终端用户的计算负担。
 
 尽管实验结果令人鼓舞，本研究仍存在以下局限性：
 
@@ -914,17 +846,6 @@ Finn 等人 [53] 在实验中发现，这种一阶近似在多数场景下与完
 
 3. 超参数敏感性：元学习的超参数（如 INNER_STEPS, META_LR）对最终效果有较大影响，且最优值可能随数据集而变化。本研究通过经验调优确定了当前配置，但系统的超参数搜索可能进一步提升性能。
 
-## 6.6 本章小结
-
-本章针对极端少样本场景下个性化血糖预测的挑战，提出并验证了基于 FOMAML 元学习算法的元迁移学习策略。核心贡献如下：
-
-1. 方法创新：将元学习引入血糖预测领域，通过 FOMAML 算法在源域受试者上进行元训练，获得对新任务快速适应友好的初始化参数。该方法与第五章的冻结编码器策略无缝结合，形成完整的少样本个性化预测框架。
-
-2. 极端少样本验证：系统的学习曲线实验表明，在微调样本量  N \leq 50 （约 4 小时数据）的极端少样本场景下，元迁移学习相比标准迁移学习在 MAE 上平均提升 [此处添加平均提升]%。这一发现将"可接受的冷启动时间"从第五章的 2-3 天缩短至数小时级别。
-
-3. 多受试者泛化：在 [此处添加受试者数量] 位独立受试者上的验证实验表明，元学习策略具有良好的跨个体泛化能力，平均性能提升稳定在 [此处添加范围]% 范围内。
-
-4. 理论洞察：从梯度方向一致性的角度解释了元学习在少样本场景下的优势机制，并分析了其与标准迁移学习的互补关系。
 
 综上所述，本章提出的元迁移学习策略为实现"佩戴即个性化"的极速冷启动用户体验提供了关键技术支撑，是构建下一代智能血糖管理系统的重要一步。
 
@@ -945,7 +866,7 @@ Finn 等人 [53] 在实验中发现，这种一阶近似在多数场景下与完
 [13] Yu X, et al. Deep transfer learning: a novel glucose prediction framework for new subjects. Complex & Intelligent Systems 2022; 8: 3123–3137. [https://doi.org/10.1007/s40747-021-00360-7]
 [14] Deng Y, et al. Deep transfer learning and data augmentation improve glucose levels prediction in type 2 diabetes patients. NPJ Digital Medicine 2021; 4: 91. [https://doi.org/10.1038/s41746-021-00480-x]
 [15] Moon K, et al. Personalized blood glucose prediction in type 1 diabetes using meta-learning with bidirectional LSTM-Transformer hybrid model. Scientific Reports 2025; 15: 13491. [https://doi.org/10.1038/s41598-025-13491-5]
-[16] Zhu T, et al. Personalized Blood Glucose Prediction for Type 1 Diabetes Using Evidential Deep Learning and Meta-Learning. IEEE Transactions on Biomedical Engineering 2023; 70(1): 193-204. [https://doi.org/10.1109/TBME.2022.3187625]
+[16] Zhu T, et al. Personalized Blood Glucose Prediction for Type 1 Diabetes Using Evidential Deep Learning and Meta-Learning. IEEE Transactions on Biomedical Engineering 2023; 70(1): 193-204. [https://doi.org/10.1109/TBME.2022.3187703]
 [17] Wang L, et al. Heterogeneous Covariates-Aware Pseudo Supervised Meta-Learning for Few-shot Diabetes Classification. IEEE Transactions on Medical Imaging 2025. [https://doi.org/10.1109/TMI.2024.3416513]
 [18] Singh R, et al. Personalized glucose prediction using in situ data only. Frontiers in Nutrition 2025; 12: 1539118. [https://doi.org/10.3389/fnut.2025.1539118]
 [19] Manchanda E, et al. Data-Efficiency with Comparable Accuracy: Personalized LSTM models on limited individual data. Diabetology 2025; 6(10): 115. [https://doi.org/10.3390/diabetology6100115]
