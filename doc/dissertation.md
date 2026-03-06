@@ -9,7 +9,7 @@
 在糖尿病管理中，血糖监测是至关重要的环节。传统的血糖监测方法，如空腹血糖、餐后血糖及糖化血红蛋白（HbA1c），虽然能够反映一定时间段内的血糖平均水平，但难以捕捉血糖的动态变化。特别是 HbA1c，作为一种“平均值”指标，往往掩盖了血糖的波动情况，无法反映低血糖和高血糖事件的频率 and 严重程度 [2]。此外，传统的指尖血自我血糖监测（SMBG）受限于测量频次和操作复杂性，难以实现全天候的连续覆盖，尤其容易遗漏夜间或餐后的血糖波动，导致患者依从性较差。
 
 因此，连续血糖监测技术（Continuous Glucose Monitoring, CGM）应运而生，并逐渐成为糖尿病管理的重要工具 [2]。CGM 技术通过皮下传感器实时监测组织间液中的葡萄糖浓度，能够提供高时间分辨率的连续血糖数据，为患者和临床医生提供了更全面、动态的血糖信息，是实现精细化血糖管理的基础。
-
+Figure 1.1 The CGM device provides long-term continuous blood glucose monitoring through subcutaneous sensors.
 从技术特点来看，CGM 通过对组织间液中的葡萄糖浓度进行高频采样（常见采样间隔为 5 分钟），极大地丰富了可利用的时间序列信息。一个典型的 CGM 系统由传感器、发射器和接收终端组成，能够实现全天候的血糖动态追踪 [3]。
 
 CGM 的核心应用价值在于其对血糖动态过程的完整记录，这使得“范围内时间”（Time in Range, TIR）等指标成为评估血糖控制质量的重要补充。TIR 指标反映了患者血糖处于目标范围（通常为 3.9–10.0 mmol/L）的时间百分比，已被美国糖尿病协会（ADA）等权威机构纳入临床指南，作为评估血糖控制质量和预测微血管并发症风险的关键指标，与传统的 HbA1c 具有互补作用 [1]。
@@ -632,7 +632,7 @@ Transformer 模型在迁移学习方面具有独特优势：其模块化的架�
 
 这种划分方式严格遵循时间因果性，且测试集数据量远大于校准集，属于典型的少样本学习（Few-shot Learning）场景。
 具体的微调参数配置如下：
-Table 5.1c.
+Table 5.1 Transfer Learning Parameter Settings Table.
 Parameter	Setting
 Optimizer	Adam optimizer
 Learning rate	1e−4
@@ -642,7 +642,7 @@ Epochs	100
 
 5.3 Result Analysis
 
-Table 5.2c.
+Table 5.2 Prediction results of the baseline model and fine-tuned model on the participant 306 test set.
 Metric	Baseline(mg/dL)	Fine-tuned(mg/dL)	Improvement(%)
 MAE	9.9727	9.2107	+7.64
 RMSE	13.5865	12.6926	+6.58
@@ -650,6 +650,7 @@ MAPE	7.6601	7.2057	+5.93
 RMSPE	10.8066	10.2925	+4.76
 
 数据表明，仅使用 30% 的校准数据进行微调，模型的各项误差指标均取得了显著下降，意味着预测结果的标准差显著减小，模型的不确定性有效降低。为验证该策略的泛化能力，我们在全部 10 位受试者上重复了上述实验流程。
+Table 5.3 Results of transfer learning experiments conducted on 10 subjects.
 subject ID	Baseline(mg/dL)	Fine-tuned(mg/dL)	Improvement(%)
 2	6.4151	5.2000	+18.94
 27	4.4126	3.6794	+16.62
@@ -795,17 +796,18 @@ Table 6-1 FOMAML Meta-Training Hyperparameter Configuration
 
 ## 6.4 实验结果与分析
 
+Figure 6.2 The learning curve of basic transfer learning and meta transfer learning.
 图 6-2 展示了对于受试者124， Basic Transfer 与 Meta Transfer 在不同微调样本量下的 MAE 对比，这是本章的核心实验结果。
 从学习曲线中我们可以发现，在微调样本量  N≤100  的区间内，Meta Transfer 相比 Basic Transfer 展现出明显的性能优势，MAE 平均降低 25.67%。特别在样本量N≤40的极少样本情况下，MAE 平均降低达到31.58%。这验证了元学习初始化在极端少样本场景下的有效性。
 随着微调样本量的增加，两种方法的性能差距逐渐缩小。当  N > 150  时，两者的 MAE 趋于接近。这一现象符合预期——当数据充足时，初始化的影响被充分的微调所"覆盖"；元学习的核心价值正是体现在数据稀缺的场景中。
 为了更直观地展示元学习的优势，我们选取  N=30 （约 2.5 小时数据）这一典型的少样本场景进行详细分析。
 
-Figure 6.3The .
+Figure 6.3 The prediction of meta transfer and basic transfer on subject 124.
 为了更直观地展示元学习的优势，我们选取  N=30 （约 2.5 小时数据）这一典型的少样本场景进行详细分析。
 图 6-3 展示了受试者124测试集上的时序预测波形对比。
 从波形细节可以观察到，在血糖快速上升阶段（如餐后），Meta Transfer 模型能够更准确地追踪峰值位置和高度，而 Basic Transfer 存在明显的峰值过冲现象。同时Meta Transfer 模型在血糖变化点的响应更为迅速，相位滞后明显减小。
 在血糖平稳阶段，两种方法的表现相近，但 Meta Transfer 的预测方差略小。这表明，Meta Transfer 不仅降低了平均误差，还减小了误差的波动幅度，表现为更稳定的预测质量。
-Table 6.2F
+Table 6.2 Comparison of the predictive indicators of basic transfer and meta transfer.
 Metric	Basic Transfer	Meta transfer	Improvement(%)
 MAE	5.9383	5.3762	9.4653
 RMSE	6.4932	6.2146	4.2901
