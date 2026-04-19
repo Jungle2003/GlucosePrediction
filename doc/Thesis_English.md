@@ -83,6 +83,8 @@ Chapter 1 Introduction 1
 
 1.2 Literature Review 3
 
+1.3 Contributions 6
+
 Chapter 2 Data Selection and Standardization 7
 
 2.1 Dataset Selection 7
@@ -152,31 +154,23 @@ Chapter 11.1Figure 1.1
 [Table 5.1 XXXXX 11](#_Toc201077407)
 
 1. Introduction
-   1. General Introduction
+   1. Background
 
-Diabetes mellitus (DM) is a metabolic disorder characterized by chronic hyperglycemia, and diabetes and its complications have become a major global public health challenge. According to the International Diabetes Federation (IDF), the number of diabetic patients worldwide continues to rise, with complications involving cardiovascular, cerebrovascular, renal, retinal, and neurological systems, severely affecting patients' quality of life. Clinical studies consistently demonstrate that strict and stable glycemic control is key to reducing the risk of diabetes-related complications[1].
+Diabetes mellitus is a chronic metabolic disease that affects more and more people worldwide. It can lead to serious problems in the heart, kidneys, eyes, and nerves, causing heavy burden on both patients and healthcare systems[1]. Keeping blood glucose levels stable is the most important way to reduce these risks. However, traditional measurement methods such as fasting glucose, post-meal glucose, and glycated hemoglobin (HbA1c) only give average values at certain times. Fingertip self-monitoring (SMBG) can give more frequent readings, but many patients find it hard to do it regularly, especially at night[2].
 
-In diabetes management, blood glucose monitoring is a critical component. Traditional blood glucose monitoring methods, such as fasting blood glucose (FBG), postprandial blood glucose (PPG), and glycated hemoglobin (HbA1c), can reflect the average blood glucose level over a certain period but are unable to capture the dynamic changes in blood glucose. Particularly, HbA1c, as a "mean" indicator, often masks fluctuations in blood glucose and fails to reflect the frequency and severity of hypoglycemic and hyperglycemic events[2]. Additionally, traditional self-monitoring blood glucose (SMBG) at the fingertip is limited by measurement frequency and operational complexity, making it difficult to achieve continuous coverage throughout the day. It is especially prone to missing nocturnal or postprandial blood glucose fluctuations, leading to poor patient adherence.
-
-Therefore, continuous glucose monitoring (CGM) has become a pivotal tool in diabetes management[2]. By utilizing subcutaneous sensors to continuously track glucose levels in interstitial fluid, CGM delivers high temporal resolution data, providing patients and clinicians with comprehensive, real-time glucose profiles. This technology forms the foundation for precision glucose control.
+Continuous glucose monitoring (CGM) solves many of these problems. A small sensor placed under the skin measures the glucose level in the tissue fluid, usually once every five minutes, and sends the data to a phone or receiver in real time[3]. This produces a detailed time series that can show the glucose changes after meals, during exercise, and overnight, which are often missed by single-point measurements.
 
 ![IMG_256](data:image/jpeg;base64...)
 
 CGM devices provide continuous glucose monitoring through subcutaneous sensors.
 
-From a technical perspective, CGM significantly enriches the available time-series information by performing high-frequency sampling of glucose concentration in interstitial fluid (commonly 5-minute). A typical CGM system consists of a sensor, transmitter, and receiving terminal, enabling round-the-clock dynamic blood glucose monitoring[3].
+CGM is useful for more than just monitoring. New clinical metrics like Time in Range (TIR), which measures how long a patient's glucose stays between 3.9 and 10.0 mmol/L each day, have been accepted by the American Diabetes Association as an important measure alongside HbA1c[2]. For this study, the key value of CGM is the rich time series data it provides. If a model can predict glucose levels 30 minutes ahead, patients have enough time to eat something before a low or take insulin before a high[6]. This changes diabetes care from reacting to problems to preventing them.
 
-The core application value of CGM lies in its complete record of the dynamic process of blood glucose, which makes indicators such as "Time in Range" (TIR) an important supplement to evaluate the quality of blood glucose control. The TIR indicator reflects the percentage of time when the patient's blood glucose is in the target range (usually 3.9–10.0 mmol/L). It has been included in clinical guidelines by authoritative institutions such as the American Diabetes Association (ADA). As a key indicator for evaluating the quality of blood glucose control and predicting the risk of microvascular complications, it complements the traditional HbA1c.
+However, CGM data has several quality issues. There is a 5–10 minute delay between the glucose level in tissue fluid and in blood[4]. Sensor wear, body movement, pressure on the sensor, and wireless connection problems can all add noise and gaps to the data[5]. Before using CGM data for prediction, these problems must be handled carefully, because they directly affect how well the model works.
 
-However, CGM data is not perfect. The sensor measures glucose concentration in interstitial fluid, and there is a physiological delay (usually 5-10 minutes) between it and the glucose concentration in the blood. Especially when blood glucose changes rapidly, there may be a brief deviation between the two[4]. In addition, factors such as sensor performance, wearing position, and environmental interference will inevitably lead to noise, drift and missing values in the data[5]. These data quality problems pose serious challenges to the subsequent blood glucose prediction model, making data cleaning, filtering and abnormal value processing the key links that must be solved first in the engineering realization of this study.
+There is still a big gap between research results and systems that can be used in practice. Many high-accuracy models in the literature use multi-modal data such as meal records, exercise logs, insulin doses, and even heart rate signals[8]. In the real world, patients rarely provide all this information. Some models that only use CGM data still need days or weeks of data from each person before they work well[13][14]. But new users expect useful predictions from the first day they wear the device.
 
-With the support of advanced technologies such as CGM, the diabetes management model is changing from the traditional "after-event evaluation" to "pre-prediction". The aim of the glucose prediction (GP) study is to infer the trend and approximate level of blood glucose changes in the future (such as 30 minutes or 60 minutes) based on historical CGM data and related physiological factors, so as to identify the potential risk of hyperglycemia or hypoglycemia in advance.
-
-Short-term blood glucose prediction has clear clinical utility. For example, when the prediction model suggests that blood glucose may drop to near the hypoglycemia threshold in the next 30 minutes, patients can take intervention measures in advance (such as eating a small amount) to effectively avoid or reduce the occurrence of asymptomatic hypoglycemia events[6]. Similarly, the prediction of the trend of postprandial blood glucose can guide patients to adjust insulin dosage or eating speed in time to reduce blood glucose fluctuations. In this way, blood glucose prediction can help patients change from passive response to active avoidance of extreme blood glucose events, significantly improving the safety of patients.
-
-From the perspective of clinical decision-making, the blood glucose prediction model provides an auxiliary tool for the optimization of individualized treatment plans. Doctors can combine the prediction model to simulate the blood glucose trajectory under different treatment plans, so as to make more reasonable and accurate adjustments. Given that the results of blood glucose prediction are directly related to the life safety of patients, the model must have a high degree of safety and reliability, which makes blood glucose prediction not only a time series regression problem, but also a complex engineering problem closely related to medical safety.
-
-Many existing high-performance prediction models rely on multi-modal data (such as diet, exercise, insulin injection, etc.)[8]. However, in practical commercial applications, it is difficult for users to provide this information continuously and accurately, resulting in model input data often limited to CGM sequences and basic physiological indicators (such as age, BMI). The core value of this research is to explore efficient and robust blood glucose prediction methods for this real application scenario with limited data. Studies have shown that accurate blood glucose prediction can still be achieved through reasonable model design when there is only easy-to-obtain "in situ data"[18], which provides an important basis for the development of commercial blood glucose prediction models.
+This study aims to solve this practical problem. We build a prediction framework that only uses CGM sequences and two basic features: age and BMI. To deal with the cold-start problem for new users, we use transfer learning and meta-learning together. The goal is to adapt a general model to a new person using only 30–50 glucose samples, which is about 2.5 to 4 hours of data. Previous research has shown that accurate prediction is possible using only CGM data[18]. Our work builds a complete pipeline that turns this idea into a tested, working system.
 
 * 1. Literature Review
 
@@ -204,9 +198,17 @@ First of all, the disconnect between multimodal data dependence and actual appli
 
 Secondly, the challenges of individual differences and model generalization have not been fully solved. The individualized model trained for a single patient has high accuracy, but it is difficult to promote; the group model trained with multiple subject data is highly generalized, but may not fully reflect the different characteristics between individuals. How to design a transfer learning strategy that can both use cross-individual information and take into account individual differences under the condition of limited data is the current research focus[13][14].
 
-In response to the above problems, we will focus on exploring how to achieve efficient fine-tuning of individualized models through transfer learning under the constraints of only CGM sequences and basic physiological indicators. Studies have put forward the Meta-Transfer Learning framework[11] and the incremental retraining strategy[12], proving the possibility of rapid individualized adaptation in a few-shot scenario. In addition, the introduction of Meta-Learning strategies (such as MAML) can enable the model to quickly adapt to new users through a very small amount of individual data[15][16], and can effectively deal with the impact of heterogeneous covariables[17].
+Transfer learning and meta-learning offer a promising route out of this impasse. A pre-trained population model encodes shared glucose dynamics; freezing most of its parameters and fine-tuning only a lightweight head on a small amount of individual data can yield rapid personalization without catastrophic forgetting[11][12]. Meta-learning algorithms such as MAML push the idea further: by optimizing an initialization that is explicitly designed for fast adaptation, they enable effective personalization from as few as a handful of samples[15][16]. The combination of these two paradigms—transfer learning for structural reuse, meta-learning for initialization quality—has yet to be systematically evaluated within a single, CGM-only prediction pipeline.
 
-In terms of experimental design and evaluation, this project will strictly follow the principle of time series division, and introduce classification and prediction indicators for low and high blood glucose events on the basis of traditional regression error indicators, so as to make the evaluation results closer to actual clinical needs. Through the above work, it is expected to form a relatively complete and reproducible CGM-based blood glucose prediction research process on the basis of existing research, which will provide reference for the engineering realization and possible clinical transformation of subsequent models.
+* 1. Contributions
+
+This thesis makes the following contributions to CGM-based blood glucose prediction.
+
+First, we build and test a complete glucose prediction framework that only uses CGM time series and two basic features (age and BMI). No meal, exercise, insulin, or other extra data is needed at any stage. The framework covers the whole process: cleaning raw data from different CGM datasets, filtering noise, building sliding-window inputs, training models, and evaluating results with both standard error metrics and the Clarke Error Grid.
+
+Second, we compare eight prediction models under the same conditions: ARIMA, Linear Regression, KNN, Random Forest, XGBoost, CNN, RNN/LSTM, and Transformer. These models cover statistical methods, traditional machine learning, and deep learning. Among them, the Transformer encoder gives the best results for 30-minute-ahead prediction. We then use it as the base model for all personalization experiments.
+
+Third, we show that both transfer learning and meta-transfer learning can effectively adapt the pre-trained Transformer to new individuals with very little data. With frozen-encoder transfer learning, fine-tuning on a small calibration set reduces RMSE by over 20% across ten test subjects. With FOMAML-based meta-transfer learning, the model adapts well from only 30–50 samples (about 2.5–4 hours of CGM data), cutting MAE by more than 30% compared with standard transfer learning. These experiments confirm that few-shot personalization is practical for real-world CGM deployment.
 
 1. Data Selection and Standardization
    1. Dataset Selection
@@ -384,7 +386,7 @@ The coefficient of the convolutional kernel depends only on the size of the wind
 
 The parameters used in this study are: window length 2m+1=15, polynomial order p=3. At a 5-minute sampling interval, the 15-minute window corresponds to a time span of 75 minutes, which can effectively smooth short-term noise fluctuations while retaining important physiological characteristics such as postprandial blood glucose peaks. The third-order polynomial can better fit the smooth change curve of blood glucose and avoid the oscillation caused by overfitting[39].
 
-The main advantage of the S-G filter is its ability to maintain the peak shape of the signal. Compared with simple moving average filtering, S-G filtering can better retain the extreme points (peaks and valleys) and high-order derivative information of the signal while smoothing noise[40]. This characteristic is especially important for blood glucose prediction, because the accurate identification of postprandial blood glucose peaks is a key indicator for evaluating the quality of blood glucose control.
+The main advantage of the S-G filter is its ability to maintain the peak shape of the signal. Compared with simple moving average filtering, S-G filtering can better retain the extreme points (peaks and valleys) and high-order derivative information of the signal while smoothing noise[40]. This matters for clinical use, since spotting postprandial peaks correctly is a basic quality check. But it also matters for prediction. Peaks and change rates are exactly what a sequence model looks at when it learns how glucose moves over time. If these features get smoothed away, the model has less useful information to work with, and prediction accuracy drops.
 
 * + 1. Butterworth Filter
 
@@ -433,9 +435,9 @@ comparison of filtering results.
 
 3. Time response: S-G filter and Butterworth filter (bidirectional/symmetric window implementation) both achieve a phase delay of 0.0 minutes, ensuring the strict alignment of the filter data with the original timeline. Kalman filter has an average phase delay of 1.7 minutes, which may introduce a small delay in early warning systems with high real-time requirements.
 
-Although the Butterworth filter has a slight advantage in noise statistics, in view of the best performance of the Savitzky-Golay filter in peak retention (Signal Fidelity) - which is crucial to preventing the real pathological hyper/hypoglycemia fluctuations, and the clinical practice is often most concerned about the maximum and extreme values of blood glucose - and its zero phase delay and high computational efficiency, we finally selected the S-G filter as the preprocessing method for CGM data. This choice ensures that the model input not only removes high-frequency noise interference, but also retains the blood glucose extreme characteristics containing key clinical information to the greatest extent.
+Since the filtered data will be used directly as model input, the key question is not which filter removes the most noise. What matters more is the balance between removing noise and keeping the local signal shape intact. Butterworth has the highest NRR (18.8%), but its PPR is only 0.972. That means every postprandial peak and every hypoglycemic trough gets cut down by about 3%. For a sequence model, those peaks and fast changes are exactly what it needs to learn glucose trends. Cutting them weakens the input signal in a way that hurts prediction. Kalman filtering has even worse problems: a negative NRR and a 1.7-minute phase lag, so it is not a good fit here.
 
-This choice is consistent with the conclusion of Sadıkoğlu and others in the study of CGM signal filtering[39], and is also supported by the experimental results of the subsequent prediction model - using the data after preprocessing S-G filter, compared with the original data, the model's prediction accuracy is greatly enhanced.
+The S-G filter sits in the middle, and that turns out to be the best place. Its NRR of 14.0% is enough to bring the noise down to a safe level — below 2 mg/dL per 5 minutes for most subjects. At the same time, its PPR of 0.987 keeps the peaks and valleys almost unchanged. So the model gets a clean signal without losing the dynamic details it needs. On top of that, S-G filtering has zero phase delay and runs fast. Sadıkoğlu et al.[39] reached a similar conclusion in their CGM filtering study. Our own results in Chapter 4 also back this up: models trained on S-G filtered data predict much better than those trained on raw data.
 
 * 1. Conclusion
 
@@ -445,24 +447,24 @@ This chapter systematically studies the noise characteristics of CGM signals and
 
 2. Noise quantitative evaluation: A multi-indicator evaluation system based on the first-order differential standard deviation, signal-to-noise ratio (SNR) and the abnormal jump ratio was established, and the CGM data of 174 subjects were systematically evaluated. The results show that 90.8% of the subject data has significant noise problems, which confirms the necessity of filtering preprocessing.
 
-3. Comparison of filtering methods: Three methods of Kalman filtering, Savitzky-Golay filtering and Butterworth low-pass filtering are implemented and compared. Quantitative evaluation shows that Butterworth filter noise suppression has the strongest ability, S-G filter peak retention ability is the best, and Kalman filter performance is inferior to both.
+3. Comparison of filtering methods: Three methods — Kalman filtering, Savitzky-Golay filtering and Butterworth low-pass filtering — are implemented and compared. There is a clear trade-off between noise removal and signal fidelity. Butterworth removes the most noise but also flattens the peaks. Kalman filtering does not suppress noise well and adds phase lag. S-G filtering removes a moderate amount of noise while keeping the local peaks and valleys nearly intact.
 
-4. Method selection: Considering the special needs of blood glucose prediction tasks, S-G filter is selected as our CGM data preprocessing method. This choice has been verified in subsequent prediction experiments.
+4. Method selection: The S-G filter gives the best balance between cleaning the signal and keeping the local features — peaks, troughs and change rates — that the prediction model needs as input. The experiments in Chapter 4 support this choice: models trained on S-G filtered data are clearly more accurate than those trained on raw data.
 
 The data set after filtering provides high-quality input for the prediction model training in the subsequent chapters, which significantly reduces the interference of noise on the model learning process. It is an indispensable key link in the realization of the whole blood glucose prediction system project.
 
 1. Model Building and Comparison
    1. Experiment and Evaluation
 
-In order to comprehensively and objectively evaluate the performance of different algorithms in blood glucose prediction tasks, we have built a unified experimental environment and evaluation system. This section will elaborate on the mathematical definition of prediction tasks, data division strategies, and statistical and clinical indicators used to measure model performance.
+All experiments in this chapter share the same prediction task, the same input format and the same evaluation metrics. The input data comes from the S-G filtered dataset produced in Chapter 3. No model receives any extra information such as meal logs, insulin doses or exercise records.
 
-We define short-term blood glucose prediction as a multivariate time series regression problem under Supervised Learning.
+We define the prediction task as a supervised time series regression problem. Let $t$ denote the current time step, and $\{g_{t-k}\}_{k=0}^{N_{past}-1}$ represent the CGM readings over the past $N_{past}$ time steps. In addition to the glucose sequence, the model takes two static features — the subject's age and BMI — denoted as the vector $s$. The full input is:
 
-Letdenote the current time instant, and represent the continuous glucose monitoring (CGM) readings over the time steps. In addition to the temporal glucose data, the model incorporates the patient's static physiological characteristics (e.g., age, Age; body mass index, BMI) and temporal features (e.g., hour, Hour), denoted as the vector The input vector of the model can be expressed as:
+$$X_t = [g_{t-N_{past}+1}, \dots, g_t, \; s]$$
 
-The prediction target is the blood glucose level at the th time step in the future (Prediction Horizon). We set the sampling interval minutes. Considering the clinical intervention window, we primarily focus on 30-minute forward prediction (i.e., ), as 30 minutes typically provides patients with sufficient time to correct impending hypoglycemic or hyperglycemic events through food intake or insulin injection[45]. Simultaneously, to fully capture recent trends and historical dependencies of blood glucose, we set the historical input window length , utilizing data from the past 60 minutes for prediction. This configuration achieves a good balance between computational efficiency and information sufficiency, and is a common setup in the relevant literature[46].
+The target output is the glucose value $g_{t+H}$ at $H$ steps into the future. With a sampling interval of $\Delta t = 5$ minutes, we set $N_{past} = 12$ (60 minutes of history) and $H = 6$ (30-minute prediction horizon). The 30-minute window gives patients enough time to act on a predicted high or low through food intake or insulin injection[45]. The 60-minute look-back captures both recent trends and short-term history, which is a common setup in CGM prediction studies[46].
 
-And we use a combination of statistical error index and clinical accuracy index to conduct a comprehensive evaluation of the prediction model.
+We use a combination of statistical error metrics and clinical accuracy metrics to evaluate each model.
 
 Statistical error indicators include:
 
@@ -502,7 +504,7 @@ In order to strictly evaluate the timing generalization ability of the model, we
 
 * 1. Baseline and Machine Learning Models
 
-In order to establish a benchmark for predicting performance, we first implemented three types of traditional models: statistical model, linear regression model and nonlinear machine learning integration model. All models adopt a unified input format: including the blood glucose value sequence of the past 12 time steps (60 minutes), as well as the two static characteristics of the subjects' age and body mass index (BMI). The input characteristic vector can be formally represented as:
+We first implemented several traditional models as baselines: a statistical time series model (ARIMA), a linear regression model, and three nonlinear machine learning methods (KNN, Random Forest, XGBoost). All of them take the same input described in Section 4.1.
 
 1. ARIMA
 
@@ -690,19 +692,17 @@ comparison of different models’ prediction.
 | LSTM | 5.0236 | 8.1853 | 4.2701 | 6.7352 | 99.8+0.2 |
 | Transformer | 6.5029 | 9.1394 | 5.7825 | 7.9993 | 99.6+0.3 |
 
-From the experimental results, the obvious performance stratification phenomenon can be observed. The overall advantage of the deep learning model is significantly better than the traditional statistical and machine learning model, which is consistent with the research trends in the field of blood glucose prediction in recent years[45]. Specifically:
+From the experimental results, a clear performance stratification can be observed across the three model categories. Two findings in the traditional and machine learning group stand out. First, Linear Regression achieves a surprisingly low RMSE of 8.53 mg/dL, competitive with the deep learning models. This is likely because the sliding window input already encodes the recent glucose trend as a near-linear pattern, and the model's small parameter count makes it resistant to overfitting. Still, it cannot capture nonlinear dynamics and shows prediction lag when glucose changes direction quickly, as will be seen in the waveform analysis below. ARIMA (RMSE 8.96) falls slightly behind, mainly because it models only the univariate glucose series without the static features (age, BMI) available to other models. Second, KNN performs far worse than all other methods (RMSE 15.63). Glucose dynamics are highly nonstationary — two windows with similar numerical values can evolve very differently depending on the underlying metabolic state — so averaging the outputs of five loosely matched neighbors tends to regress toward the population mean and produces large errors. Among the tree-based models, Random Forest (RMSE 10.28) outperforms XGBoost (RMSE 12.33), likely because XGBoost's tighter fit to the training distribution makes it more sensitive to the distribution shift between training and test subjects, while Random Forest's bootstrap aggregation acts as a natural regularizer.
 
-Limitations of the traditional model: The ARIMA model is limited by its linear hypothesis, and it is difficult to capture the nonlinear characteristics of blood glucose dynamics; although linear regression is efficient in calculation, it does not perform well in the period of rapid changes in blood glucose; although KNN is a non-parametric method, its prediction strategy based on local similarity is difficult to model long-term timing dependence, which is significantly behind other models.
+In the deep learning group, LSTM achieves the best overall RMSE (8.19). Its gating mechanism can selectively remember or forget information from each past step, holding on to a trend that started 10 minutes ago while ignoring a noise spike 5 minutes ago. This selective memory fits glucose data well, where the recent rate of change matters more than the absolute level several steps back. CNN comes close (RMSE 8.70) because 1D convolution is effective at detecting local slope patterns over 2–3 consecutive readings, and these short-term features carry most of the information for a 30-minute prediction. The basic RNN, by contrast, lags behind (RMSE 11.03) due to gradient vanishing — with a 12-step window, the earliest time steps are largely forgotten by the time the hidden state reaches the output layer.
 
-Linear performs best in traditional models, and its RMSE even exceeds LSTM. The sliding window and direct prediction strategy adopted by linear regression can effectively cope with the linear inertia in blood glucose changes. In addition, the model has few parameters and is not easy to overfit. Under the condition of limited training data, it has a certain generalization advantage. Of course, the essential limitation of linear regression is that it cannot capture nonlinear dynamics, and there will still be a prediction lag during the period of rapid fluctuations in blood glucose, which will be further discussed in the subsequent waveform analysis.
-
-LSTM and Transformer models achieve the lowest RMSE and MAE, reflecting the unique advantages of deep learning in chronological modeling. The deep learning model can automatically learn hierarchical feature representation through end-to-end, without tedious manual feature engineering, and can capture complex nonlinear dynamic patterns in blood glucose sequences. It is particularly noteworthy that the Transformer model shows comparable performance to LSTM, while having better parallel computing efficiency and interpretability - which lays an important foundation for subsequent model optimization and transfer learning.
+Transformer reaches an RMSE of 9.14, slightly behind LSTM but with distinct structural advantages. The self-attention mechanism gives it direct access to any past time step without the information decay that affects recurrent models, allowing it to attend simultaneously to the most recent reading for short-term momentum and an earlier reading for detecting an ongoing meal-induced rise. Its RMSE is marginally higher than LSTM's, likely because a 12-step input window is short enough that the LSTM's sequential inductive bias is actually helpful. However, the Transformer offers better parallel training efficiency and, more importantly for this thesis, a modular architecture (embedding layer, encoder, prediction head) that is well suited for the transfer learning and fine-tuning experiments in the following chapters.
 
 ![](data:image/png;base64...)
 
 The CEG Clarke error grid of different models.
 
-Judging from the results of the Clarke error grid, all models except KNN have achieved a clinical safety level of more than 99% in the A+B area. Among them, the proportion of Area A of LSTM, Linear, CNN and ARIMA all reached 99.8%, and Transformer accounted for 99.6%, all of which meet the basic requirements of predictive safety for clinical applications. The proportion of area A of KNN is only 93.4%, which means that more than 6% of the prediction points deviate from the clinically acceptable accuracy range, which may lead to delays in clinical decision-making in key scenarios such as hypoglycemia warning. Overall, under the 30-minute prediction window, the difference in clinical safety of the top-ranked models is no longer significant, and the distinction of each model is mainly reflected in numerical accuracy rather than safety level.
+Judging from the results of the Clarke error grid, all models except KNN have achieved a clinical safety level of more than 99% in the A+B area. Among them, the proportion of Area A of LSTM, Linear, CNN and ARIMA all reached 99.8%, and Transformer accounted for 99.6%, all of which meet the basic requirements of predictive safety for clinical applications. The proportion of area A of KNN is only 93.4%, which means that more than 6% of the prediction points fall outside the clinically acceptable accuracy range. This is mainly because KNN's predictions tend to regress toward the population average — when the true glucose is very high or very low, the K nearest neighbors are likely drawn from more moderate readings, pulling the prediction toward the center and placing it in a worse CEG zone. This systematic under-prediction of extreme values could delay clinical decision-making in critical scenarios such as hypoglycemia warning. Overall, under the 30-minute prediction window, the difference in clinical safety of the top-ranked models is no longer significant, and the distinction of each model is mainly reflected in numerical accuracy rather than safety level.
 
 In order to visually show the prediction effect, Figure 4-11 selects a representative subject (ID: 306) to show the prediction curves of different models over a continuous period of time.
 
@@ -791,7 +791,9 @@ In blood glucose prediction tasks, we can treat data from different subjects as 
 
 Applying the source domain model directly to the target domain (i.e., Zero-shot prediction) typically leads to performance degradation (Negative Transfer). Our objective is to leverage and a minimal amount of (i.e., ) to identify an optimal target function that minimizes empirical risk on the target domain test set.
 
-In order to prevent overfitting in small samples and retain general knowledge, we adopt the "freeze encoder" strategy. The Transformer model is decoupled into two parts in this architecture:
+One option is to fine-tune the entire model on the calibration data. But the calibration set has only a few hundred samples, far too few to update all the parameters without overfitting. In particular, the Transformer encoder contains most of the model's parameters. Updating it on such a small set would erase the general temporal patterns it learned during pre-training. So we freeze the encoder and only update the prediction head. This way, the shared representations stay intact, the number of trainable parameters drops to a manageable level, and the model does not forget how to handle cases missing from the calibration data, like sudden hypoglycemia.
+
+The Transformer model is decoupled into two parts in this architecture:
 
 1. Encoder: composed of a multi-layer Self-Attention mechanism and a Feed Forward Network, it is responsible for mapping the original timing input to the high-dimensional semantic feature space. We assume that what we learn in this part is the general Physiological Dynamics of blood glucose, which has strong cross-individual reusability.
 
@@ -802,14 +804,6 @@ In the process of transfer learning, we take the following specific steps:
 1. Pre-training: Train the Transformer model from scratch on a large-scale dataset comprising all subjects from the training set, obtaining the parameters and .
 
 2. Fine-tuning: For new individuals, pre-trained parameters are loaded. The encoder gradient is frozen () during backpropagation, and the regression head parameters () are updated using only a small amount of calibration data from the individual.
-
-The advantages of this strategy are:
-
-- Parameter efficiency: only a very small number of parameters (full connection layer) need to be updated, and the computing overhead is extremely low, which is suitable for online learning on edge devices.
-
-- Anti-over-mitting: Due to the huge number of parameters of Transformer encoder, it is easy to over-mit when fine-tuning on small samples. Freezing the main network plays the role of strong regularization.
-
-- Catatrophic Forgetting prevention: retains the model's understanding of general physiological patterns and prevents the model from losing the ability to generalize unprecedented situations (such as sudden hypoglycemia) during fine-tuning.
 
 In order to fully verify the effectiveness and generalization ability of personalized transfer learning, we select 10 subjects (ID: 2, 27, 49, 71, 98, 124, 146, 170, 192, 306) from the Hold-out Set excluded from Chapter 4 for independent verification. These subjects did not participate in the pre-training of the general model and were able to simulate real "new user" scenarios. Among them, the subject 306 had a high prediction error (RMSE > 13 mg/dL) under the general model, and blood glucose fluctuated violently. We take it as the object of detailed case analysis.
 
@@ -901,17 +895,17 @@ In general, this chapter proposes and verifies the personalized transfer learnin
 1. Meta-Transfer Learning
    1. Introduction
 
-The freeze encoder transfer learning strategy proposed in the previous chapter has achieved significant personalization results under the condition of 30% calibration data (about 2-3 days). However, in actual clinical scenarios, we often face stricter data constraints: new patients in the group may only have a few hours of CGM records, or users want to get personalized prediction services on the first day after wearing the device. In this Extreme Few-shot scenario - for example, only 30-50 samples (about 2.5-4 hours of data) - the strategy of Chapter 5 may not be able to fully capture individual characteristics due to insufficient calibration data, resulting in limited performance improvement.
+Chapter 5 showed that freezing the encoder and fine-tuning the prediction head works well when about 30% of a subject's data (2–3 days) is available for calibration. But in practice, a new user may only have a few hours of CGM records — say 30 to 50 samples. With so few samples, the prediction head cannot move far enough from its pre-trained weights to fit the individual's glucose pattern, and the improvement stays small. The question this chapter addresses is: can we find a better starting point for fine-tuning, so that even 30 samples are enough?
 
-The root of this challenge lies in the optimization goal of the standard transfer learning paradigm. In the pre-training stage of Chapter 4, the model learns parameter by minimizing the average loss of all source domain subjects.
+To see why the current starting point is not ideal, consider what pre-training actually optimizes. In Chapter 4, the model learns parameter θ by minimizing the average loss across all source domain subjects:
+θ=argminθi=1Nℒ(fθ,Di)
+This gives good overall accuracy, but the θ is not close to the best weights for any one person. When only a very small amount of calibration data is available, standard transfer learning may not adapt quickly enough; therefore, meta-learning is introduced to improve sample-efficient personalization.
 
-This optimization goal seeks a parameter point that performs best at the group level, but this point is not necessarily a more favorable initialization for rapid adaptation to new tasks. In other words, standard pre-training focuses on "predicting accurately" rather than "learning quickly".
+Meta-learning gives a direct answer to this problem[52][53]. Instead of looking for a θ that predicts well on average, it looks for an initialization θmeta that is easy to adapt — one where a few gradient steps on a small calibration set produce a large drop in error:
+θmeta=argminθi=1Nℒ(fθ−α∇θℒ(fθ,Disupport),Diquery)
+Here Disupport and Diquery are the support set and query set for task i. The key difference from standard pre-training is that the outer objective evaluates performance after adaptation, not before. So the optimization explicitly rewards fast learning.
 
-Meta-learning, also known as "learning to learn," provides a novel perspective for addressing this challenge[52][53]. Its core idea is to identify an initialization parameter that is most sensitive to gradient updates, rather than seeking an average-optimal parameter. Starting from this point, the model can quickly adapt to any new task with minimal gradient descent steps.
-
-and represent the support set and query set for task respectively. The objective function optimizes the model's performance on the query set after one or several gradient update steps.
-
-This chapter will deeply explore the personalized blood glucose prediction method based on meta-learning. We use the FOMAML (First-Order MAML) algorithm to conduct meta-training on the source domain subjects to obtain a quick-adapting initialization parameter. Then, through the learning curve experiment, we systematically compare the performance differences between Meta-Transfer Learning and Basic Transfer Learning under different fine-tuning sample sizes to verify the advantages of meta-learning in extremely small sample scenarios.
+This chapter uses the FOMAML algorithm to meta-train on the source domain subjects and obtain such an initialization. We then compare Meta-Transfer Learning with Basic Transfer Learning across different calibration set sizes, to test whether the meta-learned starting point actually helps when data is scarce.
 
 * 1. Meta-learning Theory
 
@@ -986,9 +980,9 @@ The learning curve of basic transfer learning and meta transfer learning.
 
 Figure 6-2 presents the comparison of Mean Absolute Error (MAE) between Basic Transfer and Meta Transfer for subject 124 across different fine-tuning sample sizes, which is the core finding of this chapter.
 
-From the learning curve, we can find that within the range of fine-tuning sample size N < 100, Meta Transfer shows obvious performance advantages compared with Basic Transfer, and MAE is reduced by an average of 25.67%. Especially in the case of a very small number of samples with a sample size of N < 40, the average reduction of MAE reached 31.58%. This verifies the effectiveness of meta-learning initialization in extremely low-sample scenarios.
+From the learning curve, Meta Transfer showed its clearest advantage over Basic Transfer when the fine-tuning set contained fewer than 100 samples, with MAE reduced by an average of 25.67%. The gap was even larger when N < 40, where MAE dropped by 31.58%. Beyond N = 100, the two methods began to converge.
 
-With the increase of fine-tuning samples, the performance gap between the two methods is gradually narrowing. When N > 150, the MAE of the two tends to be close. This phenomenon is in line with expectations - when the data is sufficient, the impact of initialization is "covered" by full fine-tuning; the core value of meta-learning is reflected in the scenario of data scarcity.
+With the increase of fine-tuning samples, the performance gap between the two methods is gradually narrowing. When N > 150, the MAE of the two tends to be close. This is expected — with enough data, any reasonable initialization will eventually converge to a similar result. The value of meta-learning lies specifically in the low-sample regime (N < 100), where the starting point matters most.
 
 ![](data:image/png;base64...)
 
@@ -1043,7 +1037,17 @@ Although the experimental results are encouraging, we still have the following l
 
 3. Hyperparameter sensitivity: The hyperparameters of metalearning (such as INNER\_STEPS, META\_LR) have a great impact on the final effect, and the optimal value may change with the data set. We have determined the current configuration through experience tuning, but the hyperparameter search of the system may further improve the performance.
 
-In summary, the meta-transfer learning strategy proposed in this chapter provides key technical support for the realization of the user experience of "wearing is personalized", which is an important step in building the next generation of intelligent blood glucose management system.
+In summary, meta-transfer learning is most useful when the calibration set is small — roughly fewer than 100 samples, or under 8 hours of CGM data. Beyond that, standard transfer learning catches up. For real-world deployment, this means the meta-learned initialization matters most during the first few hours after a new user starts wearing the device.
+
+7. Conclusion
+
+This thesis set out to answer one question: can a blood glucose prediction system work well for a new user with only a few hours of CGM data, without asking for meal logs, insulin records or any other extra input? The experiments across six chapters show that the answer is yes, as long as the right combination of pre-training, transfer learning and meta-learning is in place. The entire pipeline takes raw CGM readings from 174 subjects across three public datasets, cleans and filters them with an S-G filter to preserve peak shapes, and feeds them into models that use only the glucose sequence plus age and BMI. No step in this pipeline requires information that a typical CGM user cannot provide on the first day of wearing the device.
+
+Among the nine models tested under identical conditions, LSTM achieved the lowest test-set RMSE of 8.19 mg/dL, with CNN close behind at 8.70 and Transformer at 9.14. The Transformer did not win on raw numbers. It was chosen as the base model because its architecture separates cleanly into an encoder and a prediction head, which makes it straightforward to freeze the encoder and fine-tune only the head when adapting to a new person. LSTM's recurrent connections make the same kind of selective freezing much harder in practice. All top models reached above 99% in the A+B zones of the Clarke Error Grid, confirming that the 30-minute predictions are clinically safe across the board.
+
+Frozen-encoder transfer learning reduced the average RMSE by over 20% across ten hold-out subjects when 30% of each subject's data (roughly two to three days) was used for calibration. That is a large gain from a simple strategy. Meta-transfer learning, built on the FOMAML algorithm, pushed the boundary further into the extreme low-data regime. When the calibration set contained fewer than 100 samples, the meta-learned initialization cut MAE by 25.67% compared with standard transfer learning. With only 30 samples, about 2.5 hours of data, the reduction reached 31.58%. Once the calibration set grew beyond 150 samples, the two approaches converged to similar accuracy. The practical takeaway is clear: meta-learning matters most during the first few hours after a new user starts wearing the sensor, which is exactly when personalization is most needed and least supported by existing methods.
+
+Several limitations remain. The datasets used here come from controlled research settings, and the noise patterns and wear conditions may differ from everyday consumer use. The meta-learning hyperparameters were tuned on 164 source subjects; a smaller source pool might weaken the learned initialization. The system also predicts only a single value 30 minutes ahead rather than a full trajectory, which limits its use in closed-loop insulin delivery. Future work could extend the prediction to a multi-step output covering 30 to 120 minutes, incorporate real-time online updating so the model keeps improving as the user wears the device longer, and test the full pipeline on a prospective clinical trial with consumer-grade CGM hardware.
 
 1. Reference
 2. American Diabetes Association (ADA). Standards of Care in Diabetes—2025. Diabetes Care 2025; 48 (Supplement\_1). [<https://doi.org/10.2337/dc25-S007>]
